@@ -30,15 +30,15 @@ const LoginForm: React.FC = () => {
       await delay(1500);
       const response = await AuthServise.login(values);
       setUserRequest({ ...userRequest, response: response.data });
-      console.log(response);
       if (response.status === 201) {
+        console.log(response.data);
         setIslogin(true);
         setUserData(response.data);
         onClose();
       }
     } catch (error) {
-      setUserRequest({ ...userRequest, error: error.message });
-      console.log(error.message);
+      setUserRequest({ ...userRequest, error: error.response.data.message });
+      console.log(error.response.data.message);
     }
     setUserRequest({ ...userRequest, loading: false });
   };
@@ -48,21 +48,38 @@ const LoginForm: React.FC = () => {
       validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
-      <Form>
-        <div className="mb-2">
-          <label htmlFor="email">Email:</label>
-          <Field type="text" id="email" name="email" />
-          <ErrorMessage name="email" component="div" className="text-red-500" />
+      <Form className="text-md ">
+        <div className="mb-5 flex flex-col">
+          <label className="text-neutral-600 text-sm text-center" htmlFor="email">
+            Email address
+          </label>
+          <Field
+            className="rounded-md py-1 px-3 text-white bg-neutral-900 font-thin focus:outline-none focus:bg-neutral-600"
+            type="text"
+            id="email"
+            name="email"
+          />
+          <ErrorMessage name="email" component="div" className="text-red-400 text-xs mt-1" />
         </div>
-        <div className="mb-2">
-          <label htmlFor="password">Password:</label>
-          <Field type="password" id="password" name="password" />
-          <ErrorMessage name="password" component="div" className="text-red-500" />
+        <div className="mb-5 flex flex-col">
+          <label className="text-neutral-600 text-sm text-center" htmlFor="password">
+            Your Password
+          </label>
+          <Field
+            className="rounded-md py-1 px-3 text-white bg-neutral-900 font-thin focus:outline-none focus:bg-neutral-600"
+            type="password"
+            id="password"
+            name="password"
+          />
+          <ErrorMessage name="password" component="div" className="text-red-400 text-xs mt-1" />
         </div>
 
-        <button type="submit">
+        <button
+          className="flex items-center justify-center gap-x-2 w-full bg-neutral-600 rounded-md py-2 border border-green-500 hover:bg-green-600 transition"
+          type="submit"
+        >
           Login
-          {userRequest.loading && <Loader className="w-4 h-4 border-2 border-green-600" />}
+          {userRequest.loading && <Loader className="w-4 h-4 border-2 border-white" />}
         </button>
       </Form>
     </Formik>

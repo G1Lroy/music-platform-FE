@@ -46,7 +46,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onChange, title, description, chi
         >
           <Dialog.Title
             className="
-              text-xl 
+              text-3xl 
               text-center 
               font-bold 
               mb-4

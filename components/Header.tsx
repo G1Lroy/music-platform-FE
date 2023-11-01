@@ -69,7 +69,7 @@ const Header: React.FC<HeaderProps> = ({ className, children }) => {
           <div className="flex justify-between items-center gap-x-4">
             <>
               <div>
-                <Button onClick={onOpen}>Sign Up</Button>
+                <Button>Sign Up</Button>
               </div>
               <div>
                 <Button onClick={onOpen} className="bg-white">
