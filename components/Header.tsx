@@ -1,4 +1,5 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
@@ -9,6 +10,7 @@ import Button from "./UI/Button";
 import modalStore from "@/store/authModalStore";
 import userStore from "@/store/userStore";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 interface HeaderProps {
   className?: string;
@@ -22,6 +24,7 @@ const Header: React.FC<HeaderProps> = ({ className, children }) => {
 
   const handleLogout = async () => {
     setIslogin(false);
+    toast.success("Logged out")
     router.push("/");
   };
   return (
@@ -59,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({ className, children }) => {
           <div className="flex items-center justify-center gap-x-3">
             <Link href="/profile">
               <BiUserPin
-                title="Profile"
+                title="Go to profile page"
                 className="cursor-pointer hover:scale-125 transition"
                 size={25}
               />

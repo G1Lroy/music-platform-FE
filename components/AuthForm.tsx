@@ -6,8 +6,7 @@ import { delay } from "@/utils";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Loader from "./UI/Loader";
-import { AxiosResponse } from "axios";
-
+import toast from "react-hot-toast";
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email format").required("Enter your Email"),
   password: Yup.string()
@@ -17,8 +16,13 @@ const validationSchema = Yup.object({
 
 const AuthForm: React.FC = () => {
   const { onClose, isOpenLogin } = modalStore();
-  const { setIslogin, setUserData, isUserLoading, setIsUserLoading, setUserErrorResponse } =
-    userStore();
+  const {
+    setIslogin,
+    setLoginUserResponse,
+    isUserLoading,
+    setIsUserLoading,
+    setUserErrorResponse,
+  } = userStore();
 
   const onSubmit = async (values: { email: string; password: string }) => {
     try {
@@ -29,14 +33,15 @@ const AuthForm: React.FC = () => {
         : await AuthServise.register(values);
       if (response.status === 201) {
         setIslogin(true);
-        setUserData(response.data);
+        setLoginUserResponse(response.data);
         onClose();
+        toast.success(isOpenLogin ? "Logged" : "User create");
       }
     } catch (error) {
       //@ts-ignore
       const message = error.response.data.message;
       setUserErrorResponse(message);
-      console.log(message);
+      toast.error(message);
     } finally {
       setIsUserLoading(false);
     }
