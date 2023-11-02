@@ -4,33 +4,28 @@ import { twMerge } from "tailwind-merge";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
+import { BiUserPin } from "react-icons/bi";
 import Button from "./UI/Button";
-import modalStore from "@/store/modalStore";
+import modalStore from "@/store/authModalStore";
 import userStore from "@/store/userStore";
-import { delay } from "@/utils";
+import Link from "next/link";
 
 interface HeaderProps {
-  className: string;
-  children: React.ReactNode;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 const Header: React.FC<HeaderProps> = ({ className, children }) => {
   const router = useRouter();
-  const { onOpen } = modalStore();
+  const { setIsOpenLogin, setIsOpenRegister } = modalStore();
   const { isLogin, setIslogin } = userStore();
+
   const handleLogout = async () => {
-    await delay(1500);
     setIslogin(false);
+    router.push("/");
   };
   return (
-    <div
-      className={twMerge(`
-  h-fit
-  bg-gradient-to-b
-  from-emerald-800
-  p-5
-  `)}
-    >
+    <div className={twMerge(`h-fit bg-gradient-to-b from-emerald-800 p-5`, className)}>
       <div className="w-full flex items-center justify-between mb-5">
         {/* Desctop */}
         <div className="hidden md:flex gap-x-2 items-center">
@@ -59,9 +54,17 @@ const Header: React.FC<HeaderProps> = ({ className, children }) => {
         </div>
 
         {/* Auth */}
+
         {isLogin ? (
-          <div>
-            <Button onClick={handleLogout} className="bg-white">
+          <div className="flex items-center justify-center gap-x-3">
+            <Link href="/profile">
+              <BiUserPin
+                title="Profile"
+                className="cursor-pointer hover:scale-125 transition"
+                size={25}
+              />
+            </Link>
+            <Button onClick={handleLogout} className="bg-white flex items-center">
               Log Out
             </Button>
           </div>
@@ -69,10 +72,10 @@ const Header: React.FC<HeaderProps> = ({ className, children }) => {
           <div className="flex justify-between items-center gap-x-4">
             <>
               <div>
-                <Button>Sign Up</Button>
+                <Button onClick={() => setIsOpenRegister(true)}>Sign Up</Button>
               </div>
               <div>
-                <Button onClick={onOpen} className="bg-white">
+                <Button onClick={() => setIsOpenLogin(true)} className="bg-white">
                   Log In
                 </Button>
               </div>

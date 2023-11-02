@@ -1,12 +1,12 @@
 "use client";
 import { AuthServise } from "@/apiServise/auth";
-import modalStore from "@/store/modalStore";
+import modalStore from "@/store/authModalStore";
 import userStore from "@/store/userStore";
 import { delay } from "@/utils";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import { useState } from "react";
 import * as Yup from "yup";
 import Loader from "./UI/Loader";
+import { AxiosResponse } from "axios";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email format").required("Enter your Email"),
@@ -15,32 +15,31 @@ const validationSchema = Yup.object({
     .required("Enter your Password"),
 });
 
-const LoginForm: React.FC = () => {
-  const { onClose } = modalStore();
-  const { setIslogin, setUserData } = userStore();
-  const [userRequest, setUserRequest] = useState({
-    loading: false,
-    error: "",
-    response: {},
-  });
+const AuthForm: React.FC = () => {
+  const { onClose, isOpenLogin } = modalStore();
+  const { setIslogin, setUserData, isUserLoading, setIsUserLoading, setUserErrorResponse } =
+    userStore();
 
   const onSubmit = async (values: { email: string; password: string }) => {
-    setUserRequest({ ...userRequest, loading: true });
     try {
+      setIsUserLoading(true);
       await delay(1500);
-      const response = await AuthServise.login(values);
-      setUserRequest({ ...userRequest, response: response.data });
+      const response = isOpenLogin
+        ? await AuthServise.login(values)
+        : await AuthServise.register(values);
       if (response.status === 201) {
-        console.log(response.data);
         setIslogin(true);
         setUserData(response.data);
         onClose();
       }
     } catch (error) {
-      setUserRequest({ ...userRequest, error: error.response.data.message });
-      console.log(error.response.data.message);
+      //@ts-ignore
+      const message = error.response.data.message;
+      setUserErrorResponse(message);
+      console.log(message);
+    } finally {
+      setIsUserLoading(false);
     }
-    setUserRequest({ ...userRequest, loading: false });
   };
   return (
     <Formik
@@ -54,6 +53,7 @@ const LoginForm: React.FC = () => {
             Email address
           </label>
           <Field
+            autoFocus={false}
             className="rounded-md py-1 px-3 text-white bg-neutral-900 font-thin focus:outline-none focus:bg-neutral-600"
             type="text"
             id="email"
@@ -66,6 +66,7 @@ const LoginForm: React.FC = () => {
             Your Password
           </label>
           <Field
+            autoFocus={false}
             className="rounded-md py-1 px-3 text-white bg-neutral-900 font-thin focus:outline-none focus:bg-neutral-600"
             type="password"
             id="password"
@@ -78,12 +79,12 @@ const LoginForm: React.FC = () => {
           className="flex items-center justify-center gap-x-2 w-full bg-neutral-600 rounded-md py-2 border border-green-500 hover:bg-green-600 transition"
           type="submit"
         >
-          Login
-          {userRequest.loading && <Loader className="w-4 h-4 border-2 border-white" />}
+          {isOpenLogin ? "Login" : "Register"}
+          {isUserLoading && <Loader className="w-4 h-4 border-2 border-white" />}
         </button>
       </Form>
     </Formik>
   );
 };
 
-export default LoginForm;
+export default AuthForm;
