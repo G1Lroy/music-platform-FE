@@ -8,11 +8,11 @@ import { BsSpotify } from "react-icons/bs";
 import AuthForm from "./AuthForm";
 
 const AuthModal = () => {
-  const { isOpenLogin, isOpenRegister, onClose } = modalStore();
+  const { isOpenLogin, isOpenRegister, onClose, setIsOpenRegister } = modalStore();
   const { isLogin } = userStore();
 
-  const modalTitle = isOpenLogin ? "Welcome back" : "Enjoy music!";
-  const modalDescription = isOpenLogin ? "Login to your account" : "Create new account";
+  const modalTitle = isOpenLogin ? "Welcome back" : "Create new account";
+  const modalDescription = isOpenLogin ? "Login to your account" : "";
   return (
     <Modal
       title={modalTitle}
@@ -39,7 +39,20 @@ const AuthModal = () => {
       <div className="bg-neutral-700 w-full h-px my-5"></div>
 
       <AuthForm />
-      {/* <div>If you new go to registration</div> */}
+      {isOpenLogin && (
+        <div className="text-sm flex items-center justify-start mt-5 gap-x-1 italic">
+          <p className="text-gray-500 ">New user?</p>
+          <button
+            onClick={() => {
+              onClose();
+              setIsOpenRegister(true);
+            }}
+            className="underline text-gray-500 hover:text-green-700"
+          >
+            registration
+          </button>
+        </div>
+      )}
     </Modal>
   );
 };

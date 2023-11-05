@@ -7,6 +7,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Loader from "./UI/Loader";
 import toast from "react-hot-toast";
+import { AxiosResponse } from "axios";
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email format").required("Enter your Email"),
   password: Yup.string()
@@ -15,7 +16,7 @@ const validationSchema = Yup.object({
 });
 
 const AuthForm: React.FC = () => {
-  const { onClose, isOpenLogin } = modalStore();
+  const { onClose, isOpenLogin, setIsOpenLogin } = modalStore();
   const {
     setIslogin,
     setLoginUserResponse,
@@ -24,6 +25,18 @@ const AuthForm: React.FC = () => {
     setUserErrorResponse,
   } = userStore();
 
+  const responseHandler = async (response: AxiosResponse, loginAction: boolean) => {
+    onClose();
+    toast.success(loginAction ? "Logged" : "User created, please login");
+    if (loginAction) {
+      setIslogin(true);
+      setLoginUserResponse(response.data);
+    } else {
+      // user registration action
+      await delay(300);
+      setIsOpenLogin(true);
+    }
+  };
   const onSubmit = async (values: { email: string; password: string }) => {
     try {
       setIsUserLoading(true);
@@ -31,12 +44,7 @@ const AuthForm: React.FC = () => {
       const response = isOpenLogin
         ? await userServise.login(values)
         : await userServise.register(values);
-      if (response.status === 201) {
-        setIslogin(true);
-        setLoginUserResponse(response.data);
-        onClose();
-        toast.success(isOpenLogin ? "Logged" : "User create");
-      }
+      if (response.status === 201) responseHandler(response, isOpenLogin);
     } catch (error) {
       //@ts-ignore
       const message = error.response.data.message;

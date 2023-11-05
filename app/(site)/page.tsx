@@ -1,7 +1,5 @@
 import Header from "@/components/Header";
 import ListItem from "@/components/ListItem";
-import Button from "@/components/UI/Button";
-import { BiUserX } from "react-icons/bi";
 
 export default function Home() {
   return (
