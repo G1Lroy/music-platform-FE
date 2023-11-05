@@ -2,19 +2,23 @@ import { create } from "zustand";
 export type loginResponseT = {
   email: string;
   id: string;
-  access_token?: string;
+  access_token: string;
+};
+export type profileResponseT = {
+  email: string;
+  _id: string;
 };
 
 interface userStore {
   userErrorResponse: string;
   isUserLoading: boolean;
   loginUserResponse: loginResponseT;
-  profileUserResponse: loginResponseT;
+  profileUserResponse: profileResponseT;
   isLogin: boolean;
   setIslogin: (flag: boolean) => void;
   setIsUserLoading: (flag: boolean) => void;
   setLoginUserResponse: (obj: loginResponseT) => void;
-  setProfileUserResponse: (obj: loginResponseT) => void;
+  setProfileUserResponse: (obj: profileResponseT) => void;
   setUserErrorResponse: (error: string) => void;
 }
 
@@ -28,8 +32,7 @@ const userStore = create<userStore>((set) => ({
   },
   profileUserResponse: {
     email: "",
-    id: "",
-    access_token: "",
+    _id: "",
   },
   isLogin: false,
   setIslogin: (flag) => set((state) => ({ ...state, isLogin: flag })),

@@ -1,5 +1,5 @@
 "use client";
-import { AuthServise } from "@/apiServise/auth";
+import { userServise } from "@/apiServise/user";
 import modalStore from "@/store/authModalStore";
 import userStore from "@/store/userStore";
 import { delay } from "@/utils";
@@ -29,8 +29,8 @@ const AuthForm: React.FC = () => {
       setIsUserLoading(true);
       await delay(1500);
       const response = isOpenLogin
-        ? await AuthServise.login(values)
-        : await AuthServise.register(values);
+        ? await userServise.login(values)
+        : await userServise.register(values);
       if (response.status === 201) {
         setIslogin(true);
         setLoginUserResponse(response.data);

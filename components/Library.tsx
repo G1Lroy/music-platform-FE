@@ -22,6 +22,7 @@ const Library: React.FC<LibraryProps> = ({}) => {
         />
       </div>
       <div className="flex flex-col gap-y-2 mt-2">List of songs</div>
+ 
     </div>
   );
 };

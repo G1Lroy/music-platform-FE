@@ -1,5 +1,7 @@
 import Header from "@/components/Header";
 import ListItem from "@/components/ListItem";
+import Button from "@/components/UI/Button";
+import { BiUserX } from "react-icons/bi";
 
 export default function Home() {
   return (
@@ -17,6 +19,7 @@ export default function Home() {
           <h1 className="text-white text-2xl font-semibold">Newest songs</h1>
         </div>
         <div>MAKE LIST</div>
+      
       </div>
     </div>
   );
