@@ -11,6 +11,7 @@ import modalStore from "@/store/authModalStore";
 import userStore from "@/store/userStore";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { removeSession } from "@/utils/session";
 
 interface HeaderProps {
   className?: string;
@@ -24,7 +25,8 @@ const Header: React.FC<HeaderProps> = ({ className, children }) => {
 
   const handleLogout = async () => {
     setIslogin(false);
-    toast.success("Logged out")
+    removeSession();
+    toast.success("Logged out");
     router.push("/");
   };
   return (

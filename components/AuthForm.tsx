@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import Loader from "./UI/Loader";
 import toast from "react-hot-toast";
 import { AxiosResponse } from "axios";
+import { saveSession } from "@/utils/session";
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email format").required("Enter your Email"),
   password: Yup.string()
@@ -31,6 +32,7 @@ const AuthForm: React.FC = () => {
     if (loginAction) {
       setIslogin(true);
       setLoginUserResponse(response.data);
+      saveSession(response);
     } else {
       // user registration action
       await delay(300);

@@ -4,6 +4,7 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import ModalProvider from "@/providers/ModalProvider";
 import ToasterProvider from "@/providers/ToasterProvider";
+import AuthProvider from "@/providers/AuthProvider";
 
 const font = Figtree({ subsets: ["latin"] });
 
@@ -16,11 +17,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={font.className}>
-        <Sidebar>
-          <ToasterProvider />
-          <ModalProvider />
-          {children}
-        </Sidebar>
+        <AuthProvider>
+          <Sidebar>
+            <ToasterProvider />
+            <ModalProvider />
+            {children}
+          </Sidebar>
+        </AuthProvider>
       </body>
     </html>
   );

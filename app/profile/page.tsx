@@ -7,6 +7,7 @@ import Loader from "@/components/UI/Loader";
 import uiStore from "@/store/uiStore";
 import userStore from "@/store/userStore";
 import { delay } from "@/utils";
+import { removeSession } from "@/utils/session";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -58,6 +59,7 @@ const Profile = () => {
       await delay(1500);
       const response = await userServise.deleteUser(access_token!, _id);
       if (response.status === 200) {
+        removeSession();
         toast.success(response.data);
         setIslogin(false);
         router.replace("/");
