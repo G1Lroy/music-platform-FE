@@ -2,17 +2,25 @@
 
 import Modal from "./Modal";
 import modalStore from "../store/authModalStore";
-import userStore from "@/store/userStore";
 import { AiFillGithub } from "react-icons/ai";
 import { BsSpotify } from "react-icons/bs";
 import AuthForm from "./AuthForm";
 
 const AuthModal = () => {
   const { isOpenLogin, isOpenRegister, onClose, setIsOpenRegister } = modalStore();
-  const { isLogin } = userStore();
 
   const modalTitle = isOpenLogin ? "Welcome back" : "Create new account";
   const modalDescription = isOpenLogin ? "Login to your account" : "";
+
+  const loginWithGithub = () => {
+    
+    window.location.assign(
+      `https://github.com/login/oauth/authorize?client_id=${process.env.GH_CLIENT_ID}`
+    );
+
+  
+  };
+
   return (
     <Modal
       title={modalTitle}
@@ -21,22 +29,25 @@ const AuthModal = () => {
       onChange={onClose}
     >
       <div className="flex items-center w-full justify-center">
-        {isOpenRegister ? (
-          <button className="flex items-center justify-center gap-x-3  w-full border border-neutral-700 py-2 rounded-md bg-neutral-900 hover:bg-neutral-600 transition">
-            Sign in with GitHub
+        <div className="w-full">
+          <button
+            onClick={loginWithGithub}
+            className="my-3 flex items-center justify-center gap-x-3  w-full border border-neutral-700 py-2 rounded-md bg-neutral-900 hover:bg-neutral-600 transition"
+          >
+            Login with GitHub
             <AiFillGithub className="text-neutral-300" size={25} />
           </button>
-        ) : (
+
           <button
             onClick={onClose}
-            className="flex items-center justify-center gap-x-3 border border-neutral-700 w-full  py-2 rounded-md bg-neutral-900 hover:bg-neutral-600 transition"
+            className="my-3 flex items-center justify-center gap-x-3 border border-neutral-700 w-full  py-2 rounded-md bg-neutral-900 hover:bg-neutral-600 transition"
           >
-            Continue witout Login
+            {isOpenLogin ? "Continue witout Login" : "Continue witout Registration"}
             <BsSpotify className="text-neutral-300" size={25} />
           </button>
-        )}
+        </div>
       </div>
-      <div className="bg-neutral-700 w-full h-px my-5"></div>
+      <div className="bg-neutral-700 w-full h-px my-3"></div>
 
       <AuthForm />
       {isOpenLogin && (

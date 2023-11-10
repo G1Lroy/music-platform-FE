@@ -12,6 +12,7 @@ import userStore from "@/store/userStore";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { removeSession } from "@/utils/session";
+import uiStore from "@/store/uiStore";
 
 interface HeaderProps {
   className?: string;
@@ -22,9 +23,11 @@ const Header: React.FC<HeaderProps> = ({ className, children }) => {
   const router = useRouter();
   const { setIsOpenLogin, setIsOpenRegister } = modalStore();
   const { isLogin, setIslogin } = userStore();
+  const { setisFirstRendeProfile } = uiStore();
 
   const handleLogout = async () => {
     setIslogin(false);
+    setisFirstRendeProfile(true);
     removeSession();
     toast.success("Logged out");
     router.push("/");

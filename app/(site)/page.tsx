@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import ListItem from "@/components/ListItem";
-import App from "next/app";
 
 export default function Home() {
   return (

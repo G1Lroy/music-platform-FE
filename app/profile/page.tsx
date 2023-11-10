@@ -8,6 +8,7 @@ import uiStore from "@/store/uiStore";
 import userStore from "@/store/userStore";
 import { delay } from "@/utils";
 import { removeSession } from "@/utils/session";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -31,18 +32,33 @@ const Profile = () => {
       router.replace("/");
       return;
     }
-    if (isFirstRendeProfile) {
-      fetchProfileInfo();
+    const { access_token, id } = loginUserResponse;
+    if (isFirstRendeProfile && loginUserResponse.id) {
+      fetchProfileInfo(access_token, id);
       setisFirstRendeProfile(false);
+    } else if (isFirstRendeProfile) {
+      fetchGithubProfile();
     }
   }, []);
 
-  const fetchProfileInfo = async () => {
-    const { access_token, id } = loginUserResponse;
+  const fetchGithubProfile = async () => {
+    const token = "Bearer" + " " + localStorage.getItem("githubAccesToken");
+    try {
+      const response = await axios.get("http://localhost:5000/auth/github/getProfile", {
+        headers: {
+          Authorization: token,
+        },
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchProfileInfo = async (token: string, id: string) => {
     try {
       setIsUserLoading(true);
       await delay(1500);
-      const response = await userServise.getProfileInfo(access_token!, id);
+      const response = await userServise.getProfileInfo(token, id);
       setProfileUserResponse(response.data);
     } catch (error) {
       //@ts-ignore
@@ -51,13 +67,11 @@ const Profile = () => {
       setIsUserLoading(false);
     }
   };
-  const fetchDeleteUser = async () => {
-    const { _id } = profileUserResponse;
-    const { access_token } = loginUserResponse;
+  const fetchDeleteUser = async (token: string, id: string) => {
     try {
       setIsUserLoading(true);
       await delay(1500);
-      const response = await userServise.deleteUser(access_token!, _id);
+      const response = await userServise.deleteUser(token, id);
       if (response.status === 200) {
         removeSession();
         toast.success(response.data);
@@ -95,7 +109,11 @@ const Profile = () => {
               <p>Id: {profileUserResponse._id}</p>
               {!isUserLoading && (
                 <Button
-                  onClick={fetchDeleteUser}
+                  onClick={() => {
+                    const { _id } = profileUserResponse;
+                    const { access_token } = loginUserResponse;
+                    fetchDeleteUser(access_token, _id);
+                  }}
                   type="button"
                   className="text-white bg-red-800 flex justify-center items-center gap-x-2 w-30 px-[5px] py-0 active:scale-90 rounded-md"
                 >
