@@ -8,8 +8,14 @@ export type profileResponseT = {
   email: string;
   _id: string;
 };
+export type gitHubProfileT = {
+  avatar: string;
+  login: string;
+  profile_url: string;
+};
 
 interface userStore {
+  gitHubprofile: gitHubProfileT;
   userErrorResponse: string;
   isUserLoading: boolean;
   loginUserResponse: loginResponseT;
@@ -19,10 +25,12 @@ interface userStore {
   setIsUserLoading: (flag: boolean) => void;
   setLoginUserResponse: (obj: loginResponseT) => void;
   setProfileUserResponse: (obj: profileResponseT) => void;
+  setGithubProfile: (profile: gitHubProfileT) => void;
   setUserErrorResponse: (error: string) => void;
 }
 
 const userStore = create<userStore>((set) => ({
+  gitHubprofile: { avatar: "", login: "", profile_url: "" },
   userErrorResponse: "",
   isUserLoading: false,
   loginUserResponse: {
@@ -35,6 +43,7 @@ const userStore = create<userStore>((set) => ({
     _id: "",
   },
   isLogin: false,
+  setGithubProfile: (profile) => set((state) => ({ ...state, gitHubprofile: { ...profile } })),
   setIslogin: (flag) => set((state) => ({ ...state, isLogin: flag })),
   setIsUserLoading: (flag) => set((state) => ({ ...state, isUserLoading: flag })),
   setLoginUserResponse: (obj) => set((state) => ({ ...state, loginUserResponse: { ...obj } })),

@@ -22,13 +22,15 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ className, children }) => {
   const router = useRouter();
   const { setIsOpenLogin, setIsOpenRegister } = modalStore();
-  const { isLogin, setIslogin } = userStore();
+  const { isLogin, setIslogin, gitHubprofile, setGithubProfile } = userStore();
   const { setisFirstRendeProfile } = uiStore();
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     setIslogin(false);
     setisFirstRendeProfile(true);
     removeSession();
+    setGithubProfile({ avatar: "", login: "", profile_url: "" });
+    localStorage.removeItem("githubAccesToken");
     toast.success("Logged out");
     router.push("/");
   };

@@ -10,7 +10,7 @@ interface AuthProviderProps {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { setIslogin, setLoginUserResponse, setIsUserLoading } = userStore();
-  // const [rerender, setRerender] = useState<boolean>(false);
+
   const getAccessToken = async (code: string) => {
     try {
       const accesData = await axios.get("http://localhost:5000/auth/github/getAccess?code=" + code);
@@ -29,10 +29,13 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
   useEffect(() => {
+    if (localStorage.getItem("githubAccesToken")) {
+      setIslogin(true);
+    }
     const query = window.location.search;
     const URLparams = new URLSearchParams(query);
     const codeParam = URLparams.get("code");
-    if (codeParam && localStorage.getItem("GH_access_token") === null) {
+    if (codeParam && localStorage.getItem("githubAccesToken") === null) {
       getAccessToken(codeParam);
       setIslogin(true);
     }
