@@ -1,5 +1,4 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
@@ -11,8 +10,8 @@ import modalStore from "@/store/authModalStore";
 import userStore from "@/store/userStore";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { removeSession } from "@/utils/session";
 import uiStore from "@/store/uiStore";
+import { GH_removeTokenLocal, removeUserSession } from "@/utils/session";
 
 interface HeaderProps {
   className?: string;
@@ -22,15 +21,17 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ className, children }) => {
   const router = useRouter();
   const { setIsOpenLogin, setIsOpenRegister } = modalStore();
-  const { isLogin, setIslogin, gitHubprofile, setGithubProfile } = userStore();
-  const { setisFirstRendeProfile } = uiStore();
+  const { isLogin, setIslogin, setGithubProfile, setProfileUserResponse, setLoginUserResponse } =
+    userStore();
+  const { setІsFirstRendeProfile } = uiStore();
 
   const handleLogout = () => {
     setIslogin(false);
-    setisFirstRendeProfile(true);
-    removeSession();
+    setІsFirstRendeProfile(true);
+    removeUserSession();
+    setProfileUserResponse({ _id: "", email: "" });
     setGithubProfile({ avatar: "", login: "", profile_url: "" });
-    localStorage.removeItem("githubAccesToken");
+    GH_removeTokenLocal();
     toast.success("Logged out");
     router.push("/");
   };

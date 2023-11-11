@@ -7,8 +7,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Loader from "./UI/Loader";
 import toast from "react-hot-toast";
-import { AxiosResponse } from "axios";
-import { saveSession } from "@/utils/session";
+import { saveUserSession } from "@/utils/session";
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email format").required("Enter your Email"),
   password: Yup.string()
@@ -18,42 +17,43 @@ const validationSchema = Yup.object({
 
 const AuthForm: React.FC = () => {
   const { onClose, isOpenLogin, setIsOpenLogin } = modalStore();
-  const {
-    setIslogin,
-    setLoginUserResponse,
-    isUserLoading,
-    setIsUserLoading,
-    setUserErrorResponse,
-  } = userStore();
+  const { setIslogin, setLoginUserResponse, isUserLoading, setIsUserLoading } = userStore();
 
-  const responseHandler = async (response: AxiosResponse, loginAction: boolean) => {
-    onClose();
-    toast.success(loginAction ? "Logged" : "User created, please login");
-    if (loginAction) {
-      setIslogin(true);
-      setLoginUserResponse(response.data);
-      saveSession(response);
-    } else {
-      // user registration action
-      await delay(300);
-      setIsOpenLogin(true);
-    }
-  };
   const onSubmit = async (values: { email: string; password: string }) => {
+    setIsUserLoading(true);
+    await delay(1500);
+    isOpenLogin ? fetchLoginUser(values) : fetchRegisterUser(values);
+    setIsUserLoading(false);
+  };
+  const fetchLoginUser = async (values: { email: string; password: string }) => {
     try {
-      setIsUserLoading(true);
-      await delay(1500);
-      const response = isOpenLogin
-        ? await userServise.login(values)
-        : await userServise.register(values);
-      if (response.status === 201) responseHandler(response, isOpenLogin);
+      const response = await userServise.login(values);
+      if (response.status === 201) {
+        toast.success("Logged");
+        onClose();
+        setIslogin(true);
+        setLoginUserResponse(response.data);
+        saveUserSession(response.data);
+      }
     } catch (error) {
       //@ts-ignore
       const message = error.response.data.message;
-      setUserErrorResponse(message);
       toast.error(message);
-    } finally {
-      setIsUserLoading(false);
+    }
+  };
+  const fetchRegisterUser = async (values: { email: string; password: string }) => {
+    try {
+      const response = await userServise.register(values);
+      if (response.status === 201) {
+        toast.success("User created, please login");
+        onClose();
+        await delay(300);
+        setIsOpenLogin(true);
+      }
+    } catch (error) {
+      //@ts-ignore
+      const message = error.response.data.message;
+      toast.error(message);
     }
   };
   return (

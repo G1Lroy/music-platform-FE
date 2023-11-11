@@ -26,7 +26,6 @@ interface userStore {
   setLoginUserResponse: (obj: loginResponseT) => void;
   setProfileUserResponse: (obj: profileResponseT) => void;
   setGithubProfile: (profile: gitHubProfileT) => void;
-  setUserErrorResponse: (error: string) => void;
 }
 
 const userStore = create<userStore>((set) => ({
@@ -48,7 +47,6 @@ const userStore = create<userStore>((set) => ({
   setIsUserLoading: (flag) => set((state) => ({ ...state, isUserLoading: flag })),
   setLoginUserResponse: (obj) => set((state) => ({ ...state, loginUserResponse: { ...obj } })),
   setProfileUserResponse: (obj) => set((state) => ({ ...state, profileUserResponse: { ...obj } })),
-  setUserErrorResponse: (error) => set((state) => ({ ...state, userErrorResponse: error })),
 }));
 
 export default userStore;

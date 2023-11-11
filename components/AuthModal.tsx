@@ -5,6 +5,7 @@ import modalStore from "../store/authModalStore";
 import { AiFillGithub } from "react-icons/ai";
 import { BsSpotify } from "react-icons/bs";
 import AuthForm from "./AuthForm";
+import { GithubServise } from "@/apiServise/github";
 
 const AuthModal = () => {
   const { isOpenLogin, isOpenRegister, onClose, setIsOpenRegister } = modalStore();
@@ -12,14 +13,7 @@ const AuthModal = () => {
   const modalTitle = isOpenLogin ? "Welcome back" : "Create new account";
   const modalDescription = isOpenLogin ? "Login to your account" : "";
 
-  const loginWithGithub = () => {
-    
-    window.location.assign(
-      `https://github.com/login/oauth/authorize?client_id=${process.env.GH_CLIENT_ID}`
-    );
-
-  
-  };
+  const loginWithGithub = () => GithubServise.openGithubScreen();
 
   return (
     <Modal

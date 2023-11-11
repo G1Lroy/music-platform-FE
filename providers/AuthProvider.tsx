@@ -1,45 +1,65 @@
 "use client";
 
+import { GithubServise } from "@/apiServise/github";
 import userStore from "@/store/userStore";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { GH_saveTokenLocal, getUserSession } from "@/utils/session";
+import React, { useEffect } from "react";
+import toast from "react-hot-toast";
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { setIslogin, setLoginUserResponse, setIsUserLoading } = userStore();
+  const { setIslogin, setLoginUserResponse } = userStore();
 
-  const getAccessToken = async (code: string) => {
+  const fetchGithubAccessToken = async (code: string) => {
     try {
-      const accesData = await axios.get("http://localhost:5000/auth/github/getAccess?code=" + code);
-
-      if (accesData.data) {
-        localStorage.setItem("githubAccesToken", accesData.data);
-      }
+      const token = await GithubServise.getAccesToken(code);
+      if (token) GH_saveTokenLocal(token);
     } catch (error) {
+      //@ts-ignore
+      toast(error.message);
       console.log(error);
     }
   };
+  const continueUserSession = (
+    isUserDataLocal: string | null,
+    isGithubTokenLocal: string | null
+  ) => {
+    if (isUserDataLocal) {
+      setIslogin(true);
+      setLoginUserResponse(getUserSession());
+      toast.success("Login success");
+      return;
+    }
+    if (isGithubTokenLocal) {
+      setIslogin(true);
+      toast.success("Github login success");
+      return;
+    }
+  };
+  const getGithubAccessToken = (isGithubTokenLocal: string | null) => {
+    if (!isGithubTokenLocal) {
+      const query = window.location.search;
+      const URLparams = new URLSearchParams(query);
+      const codeParam = URLparams.get("code");
+      if (codeParam) {
+        fetchGithubAccessToken(codeParam);
+        setIslogin(true);
+        toast.success("Github login success");
+        return;
+      }
+    }
+  };
+
   useEffect(() => {
-    if (localStorage.getItem("userData")) {
-      setIslogin(true);
-      setLoginUserResponse(JSON.parse(localStorage.getItem("userData")!));
-    }
+    const isUserDataLocal = localStorage.getItem("userData");
+    const isGithubTokenLocal = localStorage.getItem("githubAccesToken");
+    continueUserSession(isUserDataLocal, isGithubTokenLocal);
+    getGithubAccessToken(isGithubTokenLocal);
   }, []);
-  useEffect(() => {
-    if (localStorage.getItem("githubAccesToken")) {
-      setIslogin(true);
-    }
-    const query = window.location.search;
-    const URLparams = new URLSearchParams(query);
-    const codeParam = URLparams.get("code");
-    if (codeParam && localStorage.getItem("githubAccesToken") === null) {
-      getAccessToken(codeParam);
-      setIslogin(true);
-    }
-  }, []);
+
   return <>{children}</>;
 };
 

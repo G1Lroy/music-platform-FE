@@ -1,4 +1,5 @@
 "use client";
+import { GithubServise } from "@/apiServise/github";
 import { userServise } from "@/apiServise/user";
 import Header from "@/components/Header";
 import Button from "@/components/UI/Button";
@@ -6,8 +7,7 @@ import Loader from "@/components/UI/Loader";
 import uiStore from "@/store/uiStore";
 import userStore, { gitHubProfileT } from "@/store/userStore";
 import { delay } from "@/utils";
-import { removeSession } from "@/utils/session";
-import axios from "axios";
+import { GH_getTokenLocal, getUserSession, removeUserSession } from "@/utils/session";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -26,31 +26,23 @@ const Profile = () => {
     setIslogin,
     setGithubProfile,
   } = userStore();
-  const { isFirstRendeProfile, setisFirstRendeProfile } = uiStore();
+  const { isFirstRendeProfile, setІsFirstRendeProfile } = uiStore();
 
   useEffect(() => {
     if (!isLogin) {
       router.replace("/");
       return;
     }
-    const { access_token, id } = loginUserResponse;
-    if (isFirstRendeProfile && loginUserResponse.id) {
-      fetchProfileInfo(access_token, id);
-    } else if (isFirstRendeProfile) {
-      fetchGithubProfile();
-    }
-    setisFirstRendeProfile(false);
+    if (!isFirstRendeProfile) return;
+    makeFetchAction();
+    setІsFirstRendeProfile(false);
   }, []);
 
-  const fetchGithubProfile = async () => {
-    setIsUserLoading(true);
-    const token = "Bearer" + " " + localStorage.getItem("githubAccesToken");
+  const fetchGithubProfile = async (token: string) => {
     try {
-      const { data } = await axios.get("http://localhost:5000/auth/github/getProfile", {
-        headers: {
-          Authorization: token,
-        },
-      });
+      setIsUserLoading(true);
+      await delay(1500);
+      const data = await GithubServise.getProfileData(token);
       const profile: gitHubProfileT = {
         login: data.login,
         avatar: data.avatar_url,
@@ -59,8 +51,9 @@ const Profile = () => {
       setGithubProfile(profile);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsUserLoading(false);
     }
-    setIsUserLoading(false);
   };
   const fetchProfileInfo = async (token: string, id: string) => {
     try {
@@ -81,10 +74,10 @@ const Profile = () => {
       await delay(1500);
       const response = await userServise.deleteUser(token, id);
       if (response.status === 200) {
-        removeSession();
-        toast.success(response.data);
+        removeUserSession();
         setIslogin(false);
         router.replace("/");
+        toast.success(response.data);
       }
     } catch (error) {
       //@ts-ignore
@@ -95,7 +88,16 @@ const Profile = () => {
     }
   };
   // сделать универсальную try/catch оболочку
-
+  const makeFetchAction = () => {
+    if (getUserSession()) {
+      const { access_token, id } = loginUserResponse;
+      fetchProfileInfo(access_token, id);
+    }
+    if (GH_getTokenLocal()) {
+      const token = GH_getTokenLocal()!;
+      fetchGithubProfile(token);
+    }
+  };
   return (
     <div
       className="
@@ -110,10 +112,10 @@ const Profile = () => {
       <Header className="from-bg-neutral-900">
         <div className="mb-2 flex flex-col gap-y-6">
           <h1 className="text-white text-3xl font-semibold">
-            {isLogin ? "Account Settings" : "Please login, redirect to homepage..."}
+            {isLogin ? "Account Settings" : "Redirect to homepage"}
           </h1>
           <div>
-            {isUserLoading && <Loader className="w-5 h-5 border-2 border-white" />}
+            {isUserLoading || (!isLogin && <Loader className="w-5 h-5 border-2 border-white" />)}
 
             {isLogin && (
               <>
