@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export class GithubServise {
+export class githubServise {
   static async getAccesToken(code: string) {
     const { data } = await axios.get("http://localhost:5000/auth/github/getAccess?code=" + code);
     return data;

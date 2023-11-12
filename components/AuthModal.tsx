@@ -5,7 +5,7 @@ import modalStore from "../store/authModalStore";
 import { AiFillGithub } from "react-icons/ai";
 import { BsSpotify } from "react-icons/bs";
 import AuthForm from "./AuthForm";
-import { GithubServise } from "@/apiServise/github";
+import { githubServise } from "@/apiServise/github";
 
 const AuthModal = () => {
   const { isOpenLogin, isOpenRegister, onClose, setIsOpenRegister } = modalStore();
@@ -13,7 +13,7 @@ const AuthModal = () => {
   const modalTitle = isOpenLogin ? "Welcome back" : "Create new account";
   const modalDescription = isOpenLogin ? "Login to your account" : "";
 
-  const loginWithGithub = () => GithubServise.openGithubScreen();
+  const loginWithGithub = () => githubServise.openGithubScreen();
 
   return (
     <Modal

@@ -1,31 +1,31 @@
 "use client";
+import { Formik, Form } from "formik";
+import { delay } from "@/utils";
+import { saveUserSession } from "@/utils/session";
+import { authSchema } from "@/const/validationSchema";
 import { userServise } from "@/apiServise/user";
 import modalStore from "@/store/authModalStore";
 import userStore from "@/store/userStore";
-import { delay } from "@/utils";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import Loader from "./UI/Loader";
 import toast from "react-hot-toast";
-import { saveUserSession } from "@/utils/session";
-const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid email format").required("Enter your Email"),
-  password: Yup.string()
-    .min(5, "Password must be at least 5 characters")
-    .required("Enter your Password"),
-});
+import FormField from "./UI/FormField";
+
+export type AuthFormValuesT = {
+  email: string;
+  password: string;
+};
 
 const AuthForm: React.FC = () => {
   const { onClose, isOpenLogin, setIsOpenLogin } = modalStore();
   const { setIslogin, setLoginUserResponse, isUserLoading, setIsUserLoading } = userStore();
 
-  const onSubmit = async (values: { email: string; password: string }) => {
+  const onSubmit = async (values: AuthFormValuesT) => {
     setIsUserLoading(true);
     await delay(1500);
     isOpenLogin ? fetchLoginUser(values) : fetchRegisterUser(values);
     setIsUserLoading(false);
   };
-  const fetchLoginUser = async (values: { email: string; password: string }) => {
+  const fetchLoginUser = async (values: AuthFormValuesT) => {
     try {
       const response = await userServise.login(values);
       if (response.status === 201) {
@@ -41,7 +41,7 @@ const AuthForm: React.FC = () => {
       toast.error(message);
     }
   };
-  const fetchRegisterUser = async (values: { email: string; password: string }) => {
+  const fetchRegisterUser = async (values: AuthFormValuesT) => {
     try {
       const response = await userServise.register(values);
       if (response.status === 201) {
@@ -59,37 +59,12 @@ const AuthForm: React.FC = () => {
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
-      validationSchema={validationSchema}
+      validationSchema={authSchema}
       onSubmit={onSubmit}
     >
-      <Form className="text-md ">
-        <div className="mb-5 flex flex-col">
-          <label className="text-neutral-600 text-sm text-center" htmlFor="email">
-            Email address
-          </label>
-          <Field
-            autoFocus={false}
-            className="rounded-md py-1 px-3 text-white bg-neutral-900 font-thin focus:outline-none focus:bg-neutral-600"
-            type="text"
-            id="email"
-            name="email"
-          />
-          <ErrorMessage name="email" component="div" className="text-red-400 text-xs mt-1" />
-        </div>
-        <div className="mb-5 flex flex-col">
-          <label className="text-neutral-600 text-sm text-center" htmlFor="password">
-            Your Password
-          </label>
-          <Field
-            autoFocus={false}
-            className="rounded-md py-1 px-3 text-white bg-neutral-900 font-thin focus:outline-none focus:bg-neutral-600"
-            type="password"
-            id="password"
-            name="password"
-          />
-          <ErrorMessage name="password" component="div" className="text-red-400 text-xs mt-1" />
-        </div>
-
+      <Form className="text-md flex flex-col gap-y-5">
+        <FormField fieldName="email" inputType="text" labelText="Email address" />
+        <FormField fieldName="password" inputType="password" labelText="Your Password" />
         <button
           className="flex items-center justify-center gap-x-2 w-full bg-neutral-600 rounded-md py-2 border border-green-500 hover:bg-green-600 transition"
           type="submit"

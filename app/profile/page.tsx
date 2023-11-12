@@ -1,17 +1,17 @@
 "use client";
-import { GithubServise } from "@/apiServise/github";
+import { useRouter } from "next/navigation";
+import { delay } from "@/utils";
+import { AiOutlineDelete } from "react-icons/ai";
+import { githubServise } from "@/apiServise/github";
 import { userServise } from "@/apiServise/user";
+import { GH_getTokenLocal, getUserSession, removeUserSession } from "@/utils/session";
+import userStore, { gitHubProfileT } from "@/store/userStore";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 import Header from "@/components/Header";
 import Button from "@/components/UI/Button";
 import Loader from "@/components/UI/Loader";
 import uiStore from "@/store/uiStore";
-import userStore, { gitHubProfileT } from "@/store/userStore";
-import { delay } from "@/utils";
-import { GH_getTokenLocal, getUserSession, removeUserSession } from "@/utils/session";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
-import { AiOutlineDelete } from "react-icons/ai";
 
 const Profile = () => {
   const router = useRouter();
@@ -42,7 +42,7 @@ const Profile = () => {
     try {
       setIsUserLoading(true);
       await delay(1500);
-      const data = await GithubServise.getProfileData(token);
+      const data = await githubServise.getProfileData(token);
       const profile: gitHubProfileT = {
         login: data.login,
         avatar: data.avatar_url,
@@ -115,7 +115,7 @@ const Profile = () => {
             {isLogin ? "Account Settings" : "Redirect to homepage"}
           </h1>
           <div>
-            {isUserLoading || (!isLogin && <Loader className="w-5 h-5 border-2 border-white" />)}
+            {(isUserLoading || !isLogin) && <Loader className="w-5 h-5 border-2 border-white" />}
 
             {isLogin && (
               <>

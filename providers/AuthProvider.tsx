@@ -1,6 +1,6 @@
 "use client";
 
-import { GithubServise } from "@/apiServise/github";
+import { githubServise } from "@/apiServise/github";
 import userStore from "@/store/userStore";
 import { GH_saveTokenLocal, getUserSession } from "@/utils/session";
 import React, { useEffect } from "react";
@@ -15,7 +15,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchGithubAccessToken = async (code: string) => {
     try {
-      const token = await GithubServise.getAccesToken(code);
+      const token = await githubServise.getAccesToken(code);
       if (token) GH_saveTokenLocal(token);
     } catch (error) {
       //@ts-ignore
