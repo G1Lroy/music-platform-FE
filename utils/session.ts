@@ -1,5 +1,5 @@
 import { loginResponseT } from "@/store/userStore";
-import { AxiosResponse } from "axios";
+
 
 export const saveUserSession = (data: loginResponseT) =>
   localStorage.setItem("userData", JSON.stringify(data));

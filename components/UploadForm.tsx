@@ -1,6 +1,6 @@
-import { Formik, Form, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import uploadModalStore from "@/store/uploadModalStore";
-import React, { useRef, useState } from "react";
+import React from "react";
 import FormField from "./UI/FormField";
 import { uploadSchema } from "@/const/validationSchema";
 import { delay } from "@/utils";
@@ -8,7 +8,8 @@ import FileInput from "./UI/FormFieldUpload";
 import Loader from "./UI/Loader";
 import { tracksServise } from "@/apiServise/tracks";
 import toast from "react-hot-toast";
-
+import { useRouter } from "next/navigation";
+import tracksPageStore from "@/store/tracksPageStore";
 
 export type UploadFormValuesT = {
   title: string;
@@ -19,16 +20,18 @@ export type UploadFormValuesT = {
 
 const UploadForm = () => {
   const { isFileLoading, setIsFileLoading, onClose } = uploadModalStore();
-
+  const { setReRenderPage } = tracksPageStore();
   const onSubmit = async (values: UploadFormValuesT) => {
+    setIsFileLoading(true);
     const response = await fetchUploadTrack(values);
+    setIsFileLoading(false);
     if (response?.status === 201) {
       onClose();
       toast.success("Track uploaded");
+      setReRenderPage();
     }
   };
   const fetchUploadTrack = async (values: UploadFormValuesT) => {
-    setIsFileLoading(true);
     const formData = new FormData();
     formData.append("title", values.title);
     formData.append("artist", values.artist);
@@ -42,8 +45,6 @@ const UploadForm = () => {
       console.log(error);
       //@ts-ignore
       toast.error(response.message);
-    } finally {
-      setIsFileLoading(false);
     }
   };
   return (

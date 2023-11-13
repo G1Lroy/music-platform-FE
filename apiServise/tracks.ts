@@ -6,4 +6,8 @@ export class tracksServise {
     const response = await axios.post("http://localhost:5000/tracks", values);
     return response;
   }
+  static async getTracks() {
+    const response = await axios.get("http://localhost:5000/tracks");
+    return response;
+  }
 }

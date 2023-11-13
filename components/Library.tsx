@@ -1,6 +1,6 @@
 "use client";
 import { TbPlaylist } from "react-icons/tb";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineFileAdd } from "react-icons/ai";
 import userStore from "@/store/userStore";
 import authModaStore from "@/store/authModalStore";
 import toast from "react-hot-toast";
@@ -28,10 +28,10 @@ const Library: React.FC<LibraryProps> = ({}) => {
           <TbPlaylist size={25} />
           <p className="font-medium text-base">Songs library</p>
         </div>
-        <AiOutlinePlus
+        <AiOutlineFileAdd
           onClick={handleUpload}
-          size={20}
-          className="text-white hover:text-gray-400 transition cursor-pointer"
+          size={25}
+          className="text-white hover:scale-75 transition cursor-pointer"
         />
       </div>
       <div className="flex flex-col gap-y-2 mt-2">List of songs</div>

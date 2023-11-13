@@ -2,7 +2,6 @@
 import React from "react";
 import Modal from "./Modal";
 import uploadModalStore from "@/store/uploadModalStore";
-import { ErrorMessage, Field, Formik } from "formik";
 import UploadForm from "./UploadForm";
 
 const UploadModal: React.FC = () => {
