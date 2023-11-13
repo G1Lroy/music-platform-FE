@@ -5,6 +5,10 @@ import FormField from "./UI/FormField";
 import { uploadSchema } from "@/const/validationSchema";
 import { delay } from "@/utils";
 import FileInput from "./UI/FormFieldUpload";
+import Loader from "./UI/Loader";
+import { tracksServise } from "@/apiServise/tracks";
+import toast from "react-hot-toast";
+
 
 export type UploadFormValuesT = {
   title: string;
@@ -14,20 +18,33 @@ export type UploadFormValuesT = {
 };
 
 const UploadForm = () => {
-  const audioInputRef = useRef<HTMLInputElement>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const { isFileLoading, setIsFileLoading } = uploadModalStore();
+  const { isFileLoading, setIsFileLoading, onClose } = uploadModalStore();
 
   const onSubmit = async (values: UploadFormValuesT) => {
-    setIsFileLoading(true);
-    await delay(1500);
-    fetchUploadTrack(values);
-    setIsFileLoading(false);
+    const response = await fetchUploadTrack(values);
+    if (response?.status === 201) {
+      onClose();
+      toast.success("Track uploaded");
+    }
   };
-  const fetchUploadTrack = (values: UploadFormValuesT) => {
-    console.log(values);
+  const fetchUploadTrack = async (values: UploadFormValuesT) => {
+    setIsFileLoading(true);
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("artist", values.artist);
+    formData.append("image", values.image!);
+    formData.append("audio", values.audio!);
     try {
-    } catch (error) {}
+      await delay(1500);
+      const response = await tracksServise.uploadTrack(formData);
+      return response;
+    } catch (error) {
+      console.log(error);
+      //@ts-ignore
+      toast.error(response.message);
+    } finally {
+      setIsFileLoading(false);
+    }
   };
   return (
     <Formik
@@ -36,7 +53,7 @@ const UploadForm = () => {
       onSubmit={onSubmit}
     >
       {({ setFieldValue }) => (
-        <Form className="text-md flex flex-col gap-y-3">
+        <Form className="text-md flex flex-col">
           <FormField
             disableCondition={isFileLoading}
             fieldName="title"
@@ -44,45 +61,24 @@ const UploadForm = () => {
             labelText="Song title"
           />
           <FormField
+            className="mb-2"
             disableCondition={isFileLoading}
             fieldName="artist"
             inputType="text"
             labelText="Song artist"
           />
-          <FileInput setFieldValue={setFieldValue} fileType="audio/*" fieldName="audio" />
-          <FileInput setFieldValue={setFieldValue} fileType="image/*" fieldName="image" />
-
-          {/* <div>
-            <input
-              accept="audio/*"
-              ref={audioInputRef}
-              type="file"
-              name="audio"
-              style={{ display: "none" }}
-              onChange={(e) => setFieldValue("audio", e.currentTarget.files?.[0])}
-            ></input>
-            {<p>Selected file: {audioInputRef?.current?.files?.[0]?.name}</p>}
-            <button type="button" onClick={() => audioInputRef.current?.click()}>
-              {audioInputRef?.current?.files?.[0]?.name ? "Chose other audio" : "Upload audio"}
-            </button>
-            <ErrorMessage name="audio" component="div" className="text-red-400 text-xs mt-1" />
-          </div>
-
-          <div>
-            <input
-              accept="image/*"
-              ref={imageInputRef}
-              type="file"
-              name="image"
-              style={{ display: "none" }}
-              onChange={(e) => setFieldValue("image", e.currentTarget.files?.[0])}
-            ></input>
-            {<p>Selected file: {imageInputRef?.current?.files?.[0]?.name}</p>}
-            <button type="button" onClick={() => imageInputRef.current?.click()}>
-              {imageInputRef?.current?.files?.[0]?.name ? "Chose other image" : "Upload image"}
-            </button>
-            <ErrorMessage name="audio" component="div" className="text-red-400 text-xs mt-1" />
-          </div> */}
+          <FileInput
+            className="mt-3"
+            setFieldValue={setFieldValue}
+            fileType="audio/*"
+            fieldName="audio"
+          />
+          <FileInput
+            className="my-3"
+            setFieldValue={setFieldValue}
+            fileType="image/*"
+            fieldName="image"
+          />
 
           <button
             disabled={isFileLoading}
@@ -90,6 +86,7 @@ const UploadForm = () => {
             type="submit"
           >
             Upload track
+            {isFileLoading && <Loader className="w-4 h-4 border-2 border-white" />}
           </button>
         </Form>
       )}

@@ -20,17 +20,14 @@ const FormField: React.FC<FormFieldProps> = ({
   className,
 }) => {
   return (
-    <div className="flex flex-col">
+    <div className={twMerge("flex flex-col", className)}>
       <label className="text-neutral-600 text-sm text-center" htmlFor={fieldName}>
         {labelText}
       </label>
       <Field
         accept={fileFormat}
         disabled={disableCondition}
-        className={twMerge(
-          "rounded-md py-1 px-3 text-white bg-neutral-900 font-thin focus:outline-none focus:bg-neutral-600",
-          className
-        )}
+        className="rounded-md py-1 px-3 text-white bg-neutral-900 font-thin focus:outline-none focus:bg-neutral-600"
         type={inputType}
         id={fieldName}
         name={fieldName}

@@ -6,7 +6,7 @@ import { ErrorMessage, Field, Formik } from "formik";
 import UploadForm from "./UploadForm";
 
 const UploadModal: React.FC = () => {
-  const { isOpenUpload, setIsOpenUpload, onClose, isFileLoading } = uploadModalStore();
+  const { isOpenUpload, onClose } = uploadModalStore();
 
   return (
     <Modal title="Add tracks" description="Upload file" isOpen={isOpenUpload} onChange={onClose}>

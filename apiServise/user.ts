@@ -1,11 +1,12 @@
+import { AuthFormValuesT } from "@/components/AuthForm";
 import axios from "axios";
 
 export class userServise {
-  static async login(values: { email: string; password: string }) {
+  static async login(values: AuthFormValuesT) {
     const response = await axios.post("http://localhost:5000/login", values);
     return response;
   }
-  static async register(values: { email: string; password: string }) {
+  static async register(values: AuthFormValuesT) {
     const response = await axios.post("http://localhost:5000/register", values);
     return response;
   }
