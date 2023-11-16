@@ -1,11 +1,8 @@
 "use client";
 import { Formik, Form } from "formik";
-import { delay } from "@/utils";
-import { saveUserSession } from "@/utils/session";
 import { authSchema } from "@/const/validationSchema";
-import { userServise } from "@/apiServise/user";
-import modalStore from "@/store/authModalStore";
-import userStore from "@/store/userStore";
+import modalStore from "@/store/authModal";
+import userStore from "@/store/user";
 import Loader from "./UI/Loader";
 import toast from "react-hot-toast";
 import FormField from "./UI/FormField";
@@ -16,52 +13,14 @@ export type AuthFormValuesT = {
 };
 
 const AuthForm: React.FC = () => {
-  const { onClose, isOpenLogin, setIsOpenLogin } = modalStore();
-  const { setIslogin, setLoginUserResponse, isUserLoading, setIsUserLoading } = userStore();
+  const { isOpenLogin, fetchLoginUser, fetchRegisterUser } = modalStore();
+  const { isUserLoading } = userStore();
 
-  const onSubmit = async (values: AuthFormValuesT) => {
-    setIsUserLoading(true);
-    await delay(1500);
+  const onSubmit = async (values: AuthFormValuesT) =>
     isOpenLogin ? fetchLoginUser(values) : fetchRegisterUser(values);
-    setIsUserLoading(false);
-  };
-  const fetchLoginUser = async (values: AuthFormValuesT) => {
-    try {
-      const response = await userServise.login(values);
-      if (response.status === 201) {
-        toast.success("Logged");
-        onClose();
-        setIslogin(true);
-        setLoginUserResponse(response.data);
-        saveUserSession(response.data);
-      }
-    } catch (error) {
-      //@ts-ignore
-      const message = error.response.data.message;
-      toast.error(message);
-    }
-  };
-  const fetchRegisterUser = async (values: AuthFormValuesT) => {
-    try {
-      const response = await userServise.register(values);
-      if (response.status === 201) {
-        toast.success("User created, please login");
-        onClose();
-        await delay(300);
-        setIsOpenLogin(true);
-      }
-    } catch (error) {
-      //@ts-ignore
-      const message = error.response.data.message;
-      toast.error(message);
-    }
-  };
+
   return (
-    <Formik
-      initialValues={{ email: "", password: "" }}
-      validationSchema={authSchema}
-      onSubmit={onSubmit}
-    >
+    <Formik initialValues={{ email: "", password: "" }} validationSchema={authSchema} onSubmit={onSubmit}>
       <Form className="text-md flex flex-col gap-y-5">
         <FormField fieldName="email" inputType="text" labelText="Email address" />
         <FormField fieldName="password" inputType="password" labelText="Your Password" />

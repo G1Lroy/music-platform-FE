@@ -1,36 +1,21 @@
 "use client";
 
-import { tracksServise } from "@/apiServise/tracks";
 import Loader from "@/components/UI/Loader";
-import tracksPageStore from "@/store/tracksPageStore";
-import userStore from "@/store/userStore";
-import { delay } from "@/utils";
+import tracksPageStore from "@/store/tracksPage";
 import { useEffect } from "react";
-import toast from "react-hot-toast";
+
 import TrackItem from "./TrackItem";
 
 const PageContent: React.FC = () => {
-  const { isTracksLoading, setIsTracksLoading, setTracks, tracks, reRenderPage } =
-    tracksPageStore();
-  const { isLogin } = userStore();
-  const fetchTracks = async () => {
-    try {
-      setIsTracksLoading(true);
-      await delay(1500);
-      const { data } = await tracksServise.getTracks();
-      setTracks(data);
-    } catch (error) {
-      toast.error("Fetching tracks error");
-    } finally {
-      setIsTracksLoading(false);
-    }
-  };
+  const { isTracksLoading, tracks, reRenderPage, fetchTracks } = tracksPageStore();
+
   useEffect(() => {
-    if (!isLogin) return;
     fetchTracks();
-  }, [isLogin, reRenderPage]);
+  }, [reRenderPage]);
+
   return (
     <div>
+
       {isTracksLoading ? (
         <Loader className="w-5 h-5 border-2 border-white" />
       ) : (

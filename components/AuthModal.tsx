@@ -1,27 +1,28 @@
 "use client";
 
 import Modal from "./Modal";
-import modalStore from "../store/authModalStore";
+import modalStore from "../store/authModal";
 import { AiFillGithub } from "react-icons/ai";
 import { BsSpotify } from "react-icons/bs";
 import AuthForm from "./AuthForm";
 import { githubServise } from "@/apiServise/github";
+import Loader from "./UI/Loader";
+import ghProfile from "@/store/ghProfile";
 
 const AuthModal = () => {
   const { isOpenLogin, isOpenRegister, onClose, setIsOpenRegister } = modalStore();
+  const { ghProfileLoading, setGhProfileLoading } = ghProfile();
 
   const modalTitle = isOpenLogin ? "Welcome back" : "Create new account";
   const modalDescription = isOpenLogin ? "Login to your account" : "";
 
-  const loginWithGithub = () => githubServise.openGithubScreen();
+  const loginWithGithub = () => {
+    setGhProfileLoading(true);
+    githubServise.openGithubScreen();
+  };
 
   return (
-    <Modal
-      title={modalTitle}
-      description={modalDescription}
-      isOpen={isOpenLogin || isOpenRegister}
-      onChange={onClose}
-    >
+    <Modal title={modalTitle} description={modalDescription} isOpen={isOpenLogin || isOpenRegister} onChange={onClose}>
       <div className="flex items-center w-full justify-center">
         <div className="w-full">
           <button
@@ -30,6 +31,7 @@ const AuthModal = () => {
           >
             Login with GitHub
             <AiFillGithub className="text-neutral-300" size={25} />
+            {ghProfileLoading && <Loader className="w-4 h-4 border-2 border-white" />}
           </button>
 
           <button

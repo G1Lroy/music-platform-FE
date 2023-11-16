@@ -9,8 +9,8 @@ interface uiStore {
 const uiStore = create<uiStore>((set) => ({
   isFirstRendeProfile: true,
   isLoading: false,
-  setIsLoading: (flag) => set((state) => ({ ...state, isLogin: flag })),
-  setІsFirstRendeProfile: (flag) => set((state) => ({ ...state, isFirstRendeProfile: flag })),
+  setIsLoading: (flag) => set({ isLoading: flag }),
+  setІsFirstRendeProfile: (flag) => set({ isFirstRendeProfile: flag }),
 }));
 
 export default uiStore;

@@ -1,32 +1,23 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { delay } from "@/utils";
 import { AiOutlineDelete } from "react-icons/ai";
-import { githubServise } from "@/apiServise/github";
-import { userServise } from "@/apiServise/user";
-import { GH_getTokenLocal, getUserSession, removeUserSession } from "@/utils/session";
-import userStore, { gitHubProfileT } from "@/store/userStore";
+import { GH_getTokenLocal, getUserSession } from "@/utils/session";
+import userStore from "@/store/user";
 import { useEffect } from "react";
-import toast from "react-hot-toast";
 import Header from "@/components/Header";
 import Button from "@/components/UI/Button";
 import Loader from "@/components/UI/Loader";
-import uiStore from "@/store/uiStore";
+import uiStore from "@/store/ui";
+import ghProfileStore from "@/store/ghProfile";
+import { toastConfig } from "@/const";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const router = useRouter();
-  const {
-    gitHubprofile,
-    isLogin,
-    loginUserResponse,
-    isUserLoading,
-    setIsUserLoading,
-    setProfileUserResponse,
-    profileUserResponse,
-    setIslogin,
-    setGithubProfile,
-  } = userStore();
+  const { isLogin, loginResponse, isUserLoading, fetchProfileInfo, userProfile, userProfileLoading, fetchDeleteUser } =
+    userStore();
   const { isFirstRendeProfile, setІsFirstRendeProfile } = uiStore();
+  const { ghProfile, ghProfileLoading, fetchGhProfile } = ghProfileStore();
 
   useEffect(() => {
     if (!isLogin) {
@@ -36,66 +27,18 @@ const Profile = () => {
     if (!isFirstRendeProfile) return;
     makeFetchAction();
     setІsFirstRendeProfile(false);
-  }, []);
+  }, [isLogin]);
 
-  const fetchGithubProfile = async (token: string) => {
-    try {
-      setIsUserLoading(true);
-      await delay(1500);
-      const data = await githubServise.getProfileData(token);
-      const profile: gitHubProfileT = {
-        login: data.login,
-        avatar: data.avatar_url,
-        profile_url: data.html_url,
-      };
-      setGithubProfile(profile);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsUserLoading(false);
-    }
-  };
-  const fetchProfileInfo = async (token: string, id: string) => {
-    try {
-      setIsUserLoading(true);
-      await delay(1500);
-      const response = await userServise.getProfileInfo(token, id);
-      setProfileUserResponse(response.data);
-    } catch (error) {
-      //@ts-ignore
-      toast.error(error.response.data.error);
-    } finally {
-      setIsUserLoading(false);
-    }
-  };
-  const fetchDeleteUser = async (token: string, id: string) => {
-    try {
-      setIsUserLoading(true);
-      await delay(1500);
-      const response = await userServise.deleteUser(token, id);
-      if (response.status === 200) {
-        removeUserSession();
-        setIslogin(false);
-        router.replace("/");
-        toast.success(response.data);
-      }
-    } catch (error) {
-      //@ts-ignore
-      toast.error(error.response.data.error);
-      // console.log(error.response.data.error);
-    } finally {
-      setIsUserLoading(false);
-    }
-  };
-  // сделать универсальную try/catch оболочку
   const makeFetchAction = () => {
     if (getUserSession()) {
-      const { access_token, id } = loginUserResponse;
+      const { access_token, id } = loginResponse;
       fetchProfileInfo(access_token, id);
+      return;
     }
     if (GH_getTokenLocal()) {
       const token = GH_getTokenLocal()!;
-      fetchGithubProfile(token);
+      fetchGhProfile(token);
+      return;
     }
   };
   return (
@@ -111,23 +54,23 @@ const Profile = () => {
     >
       <Header className="from-bg-neutral-900">
         <div className="mb-2 flex flex-col gap-y-6">
-          <h1 className="text-white text-3xl font-semibold">
-            {isLogin ? "Account Settings" : "Redirect to homepage"}
-          </h1>
+          <h1 className="text-white text-3xl font-semibold">{isLogin ? "Account Settings" : "Redirect to homepage"}</h1>
           <div>
-            {(isUserLoading || !isLogin) && <Loader className="w-5 h-5 border-2 border-white" />}
+            {(userProfileLoading || !isLogin || ghProfileLoading) && (
+              <Loader className="w-5 h-5 border-2 border-white" />
+            )}
 
             {isLogin && (
               <>
-                {profileUserResponse._id && (
+                {userProfile._id && (
                   <div className="bg-black p-2 rounded-md flex flex-col gap-y-3 max-w-md">
-                    <p>Email: {profileUserResponse.email}</p>
-                    <p>Id: {profileUserResponse._id}</p>
+                    <p>Email: {userProfile.email}</p>
+                    <p>Id: {userProfile._id}</p>
                     {!isUserLoading && (
                       <Button
                         onClick={() => {
-                          const { _id } = profileUserResponse;
-                          const { access_token } = loginUserResponse;
+                          const { _id } = userProfile;
+                          const { access_token } = loginResponse;
                           fetchDeleteUser(access_token, _id);
                         }}
                         type="button"
@@ -140,20 +83,20 @@ const Profile = () => {
                   </div>
                 )}
 
-                {gitHubprofile.login && (
+                {ghProfile.login && (
                   <div className="bg-black p-2 rounded-md flex items-center  gap-x-3 max-w-md">
                     <img
                       loading="lazy"
                       className="w-[80px] h-[80px] rounded-md"
-                      src={gitHubprofile.avatar}
+                      src={ghProfile.avatar}
                       alt="Github avatar"
                     />
                     <div className="flex flex-col gap-y-1 w-full">
-                      <p>Github user: {gitHubprofile.login}</p>
+                      <p>Github user: {ghProfile.login}</p>
                       <p>
                         Github profile:{" "}
-                        <a className="hover:underline" href={gitHubprofile.profile_url}>
-                          {gitHubprofile.profile_url}
+                        <a className="hover:underline" href={ghProfile.profile_url}>
+                          {ghProfile.profile_url}
                         </a>
                       </p>
                       <a

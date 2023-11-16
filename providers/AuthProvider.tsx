@@ -1,61 +1,18 @@
 "use client";
 
-import { githubServise } from "@/apiServise/github";
-import userStore from "@/store/userStore";
-import { GH_saveTokenLocal, getUserSession } from "@/utils/session";
+import userSession from "@/store/userSession";
 import React, { useEffect } from "react";
-import toast from "react-hot-toast";
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { setIslogin, setLoginUserResponse } = userStore();
-
-  const fetchGithubAccessToken = async (code: string) => {
-    try {
-      const token = await githubServise.getAccesToken(code);
-      if (token) GH_saveTokenLocal(token);
-    } catch (error) {
-      //@ts-ignore
-      toast(error.message);
-      console.log(error);
-    }
-  };
-  const continueUserSession = (
-    isUserDataLocal: string | null,
-    isGithubTokenLocal: string | null
-  ) => {
-    if (isUserDataLocal) {
-      setIslogin(true);
-      setLoginUserResponse(getUserSession());
-      toast.success("Login success");
-      return;
-    }
-    if (isGithubTokenLocal) {
-      setIslogin(true);
-      toast.success("Github login success");
-      return;
-    }
-  };
-  const getGithubAccessToken = (isGithubTokenLocal: string | null) => {
-    if (!isGithubTokenLocal) {
-      const query = window.location.search;
-      const URLparams = new URLSearchParams(query);
-      const codeParam = URLparams.get("code");
-      if (codeParam) {
-        fetchGithubAccessToken(codeParam);
-        setIslogin(true);
-        toast.success("Github login success");
-        return;
-      }
-    }
-  };
+  const { continueUserSession, getGithubAccessToken } = userSession();
 
   useEffect(() => {
-    const isUserDataLocal = localStorage.getItem("userData");
-    const isGithubTokenLocal = localStorage.getItem("githubAccesToken");
+    const isUserDataLocal = localStorage.getItem("userData") || null;
+    const isGithubTokenLocal = localStorage.getItem("githubAccesToken") || null;
     continueUserSession(isUserDataLocal, isGithubTokenLocal);
     getGithubAccessToken(isGithubTokenLocal);
   }, []);

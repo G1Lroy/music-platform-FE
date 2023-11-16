@@ -1,4 +1,5 @@
-import { TrackT } from "@/store/tracksPageStore";
+
+import { TrackT } from "@/store/tracksPage/model";
 import React from "react";
 
 interface TrackItemProps {
@@ -34,11 +35,7 @@ const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
           overflow-hidden
         "
       >
-        <img
-          loading="lazy"
-          src={"http://localhost:5000/" + track.image}
-          alt=""
-        />
+        <img className="w-full h-full" loading="lazy" src={"http://localhost:5000/" + track.image} alt="" />
       </div>
       <div className="flex flex-col items-start w-full pt-4 gap-y-1">
         <p className="font-semibold truncate w-full">{track.title}</p>

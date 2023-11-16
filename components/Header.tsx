@@ -6,12 +6,13 @@ import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
 import { BiUserPin } from "react-icons/bi";
 import Button from "./UI/Button";
-import modalStore from "@/store/authModalStore";
-import userStore from "@/store/userStore";
+import modalStore from "@/store/authModal";
+import userStore from "@/store/user";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import uiStore from "@/store/uiStore";
+import uiStore from "@/store/ui";
 import { GH_removeTokenLocal, removeUserSession } from "@/utils/session";
+import ghProfileStore from "@/store/ghProfile";
 
 interface HeaderProps {
   className?: string;
@@ -21,19 +22,17 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ className, children }) => {
   const router = useRouter();
   const { setIsOpenLogin, setIsOpenRegister } = modalStore();
-  const { isLogin, setIslogin, setGithubProfile, setProfileUserResponse, setLoginUserResponse } =
-    userStore();
+  const { isLogin, logout } = userStore();
   const { setІsFirstRendeProfile } = uiStore();
+  const { ghLogout } = ghProfileStore();
 
   const handleLogout = () => {
-    setIslogin(false);
+    logout();
+    ghLogout();
     setІsFirstRendeProfile(true);
-    removeUserSession();
-    setProfileUserResponse({ _id: "", email: "" });
-    setGithubProfile({ avatar: "", login: "", profile_url: "" });
     GH_removeTokenLocal();
+    removeUserSession();
     toast.success("Logged out");
-    router.push("/");
   };
   return (
     <div className={twMerge(`h-fit bg-gradient-to-b from-emerald-800 p-5`, className)}>
@@ -69,11 +68,7 @@ const Header: React.FC<HeaderProps> = ({ className, children }) => {
         {isLogin ? (
           <div className="flex items-center justify-center gap-x-3">
             <Link href="/profile">
-              <BiUserPin
-                title="Go to profile page"
-                className="cursor-pointer hover:scale-125 transition"
-                size={25}
-              />
+              <BiUserPin title="Go to profile page" className="cursor-pointer hover:scale-125 transition" size={25} />
             </Link>
             <Button onClick={handleLogout} className="bg-white flex items-center">
               Log Out

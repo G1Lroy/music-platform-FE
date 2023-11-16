@@ -1,66 +1,24 @@
 import { Formik, Form } from "formik";
-import uploadModalStore from "@/store/uploadModalStore";
+import uploadModalStore from "@/store/uploadModal";
 import React from "react";
 import FormField from "./UI/FormField";
 import { uploadSchema } from "@/const/validationSchema";
-import { delay } from "@/utils";
 import FileInput from "./UI/FormFieldUpload";
 import Loader from "./UI/Loader";
-import { tracksServise } from "@/apiServise/tracks";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import tracksPageStore from "@/store/tracksPageStore";
-
-export type UploadFormValuesT = {
-  title: string;
-  artist: string;
-  audio: File | null;
-  image: File | null;
-};
+import { uploadFormValuesT } from "@/store/uploadModal/model";
 
 const UploadForm = () => {
-  const { isFileLoading, setIsFileLoading, onClose } = uploadModalStore();
-  const { setReRenderPage } = tracksPageStore();
-  const onSubmit = async (values: UploadFormValuesT) => {
-    setIsFileLoading(true);
-    const response = await fetchUploadTrack(values);
-    setIsFileLoading(false);
-    if (response?.status === 201) {
-      onClose();
-      toast.success("Track uploaded");
-      setReRenderPage();
-    }
-  };
-  const fetchUploadTrack = async (values: UploadFormValuesT) => {
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("artist", values.artist);
-    formData.append("image", values.image!);
-    formData.append("audio", values.audio!);
-    try {
-      await delay(1500);
-      const response = await tracksServise.uploadTrack(formData);
-      return response;
-    } catch (error) {
-      console.log(error);
-      //@ts-ignore
-      toast.error(response.message);
-    }
-  };
+  const { isFileLoading, fetchUploadTrack } = uploadModalStore();
+
   return (
     <Formik
       initialValues={{ title: "", artist: "", audio: null, image: null }}
       validationSchema={uploadSchema}
-      onSubmit={onSubmit}
+      onSubmit={(values: uploadFormValuesT) => fetchUploadTrack(values)}
     >
       {({ setFieldValue }) => (
         <Form className="text-md flex flex-col">
-          <FormField
-            disableCondition={isFileLoading}
-            fieldName="title"
-            inputType="text"
-            labelText="Song title"
-          />
+          <FormField disableCondition={isFileLoading} fieldName="title" inputType="text" labelText="Song title" />
           <FormField
             className="mb-2"
             disableCondition={isFileLoading}
@@ -68,18 +26,8 @@ const UploadForm = () => {
             inputType="text"
             labelText="Song artist"
           />
-          <FileInput
-            className="mt-3"
-            setFieldValue={setFieldValue}
-            fileType="audio/*"
-            fieldName="audio"
-          />
-          <FileInput
-            className="my-3"
-            setFieldValue={setFieldValue}
-            fileType="image/*"
-            fieldName="image"
-          />
+          <FileInput className="mt-3" setFieldValue={setFieldValue} fileType="audio/*" fieldName="audio" />
+          <FileInput className="my-3" setFieldValue={setFieldValue} fileType="image/*" fieldName="image" />
 
           <button
             disabled={isFileLoading}

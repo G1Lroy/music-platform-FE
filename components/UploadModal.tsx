@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Modal from "./Modal";
-import uploadModalStore from "@/store/uploadModalStore";
+import uploadModalStore from "@/store/uploadModal";
 import UploadForm from "./UploadForm";
 
 const UploadModal: React.FC = () => {

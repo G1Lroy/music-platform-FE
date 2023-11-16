@@ -1,4 +1,4 @@
-import { loginResponseT } from "@/store/userStore";
+import { loginResponseT } from "@/store/user";
 
 
 export const saveUserSession = (data: loginResponseT) =>

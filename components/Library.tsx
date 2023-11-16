@@ -1,11 +1,11 @@
 "use client";
 import { TbPlaylist } from "react-icons/tb";
 import { AiOutlineFileAdd } from "react-icons/ai";
-import userStore from "@/store/userStore";
-import authModaStore from "@/store/authModalStore";
+import userStore from "@/store/user";
+import authModaStore from "@/store/authModal";
 import toast from "react-hot-toast";
 import { toastConfig } from "@/const";
-import uploadModalStore from "@/store/uploadModalStore";
+import uploadModalStore from "@/store/uploadModal";
 
 interface LibraryProps {}
 
