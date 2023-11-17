@@ -1,4 +1,4 @@
-
+import PlayButton from "@/components/UI/PlayButton";
 import { TrackT } from "@/store/tracksPage/model";
 import React from "react";
 
@@ -23,7 +23,6 @@ const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
         hover:bg-neutral-400/10 
         transition 
         p-3"
-      key={track._id}
     >
       <div
         className="
@@ -58,7 +57,7 @@ const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
           right-5
         "
       >
-        Play BTN
+        <PlayButton />
       </div>
     </div>
   );

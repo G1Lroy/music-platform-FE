@@ -6,6 +6,7 @@ export type TrackT = {
   comments: CommentT[];
   listenCoiunt: number;
   _id: string;
+  userId: string;
 };
 export type CommentT = {
   text: string;
@@ -18,5 +19,6 @@ export interface ITracksPage {
   reRenderPage: boolean;
   setReRenderPage: () => void;
   fetchTracks: () => Promise<void>;
-
+  tracksByUser: TrackT[];
+  setTracksByUser: (tracks: TrackT[]) => void;
 }

@@ -1,6 +1,6 @@
 export interface IUserProfile {
+  currentUser: string;
   isLogin: boolean;
-  deleteUserProfileMessage: string;
   userProfileLoading: boolean;
   isUserLoading: boolean;
   loginResponse: loginResponseT;
@@ -9,8 +9,9 @@ export interface IUserProfile {
   fetchDeleteUser: (token: string, id: string) => Promise<void>;
   setIsLogin: (flag: boolean) => void;
   setLoginUserResponse: (response: loginResponseT) => void;
-  logout: () => Promise<void>;
+  userLogout: () => Promise<void>;
   setIsUserLoading: (flag: boolean) => void;
+  getCurrentUser: () => void;
 }
 export type loginResponseT = {
   email: string;

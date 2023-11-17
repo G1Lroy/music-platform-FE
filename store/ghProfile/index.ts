@@ -3,7 +3,7 @@ import { ghProfileT, IGhProfile } from "./model";
 import { delay } from "@/utils";
 import { githubServise } from "@/apiServise/github";
 import toast from "react-hot-toast";
-import { GH_saveTokenLocal } from "@/utils/session";
+import { GH_removeTokenLocal, GH_saveTokenLocal } from "@/utils/session";
 
 const ghProfileEmpty = {
   avatar: "",
@@ -12,7 +12,7 @@ const ghProfileEmpty = {
 };
 
 const ghProfile = create<IGhProfile>((set) => ({
-  ghProfile: ghProfileEmpty,
+  profile: ghProfileEmpty,
   ghProfileLoading: false,
   setGhProfileLoading: (flag) => set({ ghProfileLoading: flag }),
   fetchGhProfile: async (token) => {
@@ -25,7 +25,7 @@ const ghProfile = create<IGhProfile>((set) => ({
         avatar: data.avatar_url,
         profile_url: data.html_url,
       };
-      set({ ghProfile: profile });
+      set({ profile: profile });
     } catch (error) {
       toast.error("Failed to get github profile");
     } finally {
@@ -41,7 +41,10 @@ const ghProfile = create<IGhProfile>((set) => ({
       toast(error.message);
     }
   },
-  ghLogout: () => set({ ghProfile: ghProfileEmpty }),
+  ghLogout: () => {
+    set({ profile: ghProfileEmpty });
+    GH_removeTokenLocal();
+  },
 }));
 
 export default ghProfile;

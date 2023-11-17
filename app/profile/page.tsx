@@ -9,15 +9,13 @@ import Button from "@/components/UI/Button";
 import Loader from "@/components/UI/Loader";
 import uiStore from "@/store/ui";
 import ghProfileStore from "@/store/ghProfile";
-import { toastConfig } from "@/const";
-import toast from "react-hot-toast";
 
 const Profile = () => {
   const router = useRouter();
   const { isLogin, loginResponse, isUserLoading, fetchProfileInfo, userProfile, userProfileLoading, fetchDeleteUser } =
     userStore();
   const { isFirstRendeProfile, setІsFirstRendeProfile } = uiStore();
-  const { ghProfile, ghProfileLoading, fetchGhProfile } = ghProfileStore();
+  const { profile, ghProfileLoading, fetchGhProfile } = ghProfileStore();
 
   useEffect(() => {
     if (!isLogin) {
@@ -27,6 +25,7 @@ const Profile = () => {
     if (!isFirstRendeProfile) return;
     makeFetchAction();
     setІsFirstRendeProfile(false);
+    
   }, [isLogin]);
 
   const makeFetchAction = () => {
@@ -54,10 +53,14 @@ const Profile = () => {
     >
       <Header className="from-bg-neutral-900">
         <div className="mb-2 flex flex-col gap-y-6">
-          <h1 className="text-white text-3xl font-semibold">{isLogin ? "Account Settings" : "Redirect to homepage"}</h1>
+          <h1 className="text-white text-3xl font-semibold">
+            {isLogin ? "Account Settings" : "Redirect to homepage, user must be logged"}
+          </h1>
           <div>
             {(userProfileLoading || !isLogin || ghProfileLoading) && (
-              <Loader className="w-5 h-5 border-2 border-white" />
+              <div>
+                <Loader className="w-5 h-5 border-2 border-white" />
+              </div>
             )}
 
             {isLogin && (
@@ -83,20 +86,20 @@ const Profile = () => {
                   </div>
                 )}
 
-                {ghProfile.login && (
+                {profile.login && (
                   <div className="bg-black p-2 rounded-md flex items-center  gap-x-3 max-w-md">
                     <img
                       loading="lazy"
                       className="w-[80px] h-[80px] rounded-md"
-                      src={ghProfile.avatar}
+                      src={profile.avatar}
                       alt="Github avatar"
                     />
                     <div className="flex flex-col gap-y-1 w-full">
-                      <p>Github user: {ghProfile.login}</p>
+                      <p>Github user: {profile.login}</p>
                       <p>
                         Github profile:{" "}
-                        <a className="hover:underline" href={ghProfile.profile_url}>
-                          {ghProfile.profile_url}
+                        <a className="hover:underline" href={profile.profile_url}>
+                          {profile.profile_url}
                         </a>
                       </p>
                       <a

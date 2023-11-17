@@ -20,11 +20,13 @@ const authModal = create<IauthModal>((set, get) => ({
       await delay(1000);
       const response = await userServise.login(values);
       if (response.status === 201) {
+        const { getCurrentUser } = userStore.getState();
         toast.success("Logged");
         get().onClose();
         setIsLogin(true);
         setLoginUserResponse(response.data);
         saveUserSession(response.data);
+        getCurrentUser()
       }
     } catch (error) {
       //@ts-ignore

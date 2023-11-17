@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import tracksPageStore from "../tracksPage";
 import { uploadFormValuesT, IUploadModaL } from "./model";
+import userStore from "../user";
 
 const uploadModalStore = create<IUploadModaL>((set, get) => ({
   isFileLoading: false,
@@ -12,20 +13,22 @@ const uploadModalStore = create<IUploadModaL>((set, get) => ({
   onClose: () => set({ isOpenUpload: false }),
   setIsFileLoading: (flag) => set({ isFileLoading: flag }),
   fetchUploadTrack: async (values: uploadFormValuesT) => {
+    const { loginResponse } = userStore.getState();
     const formData = new FormData();
     formData.append("title", values.title);
     formData.append("artist", values.artist);
     formData.append("image", values.image!);
     formData.append("audio", values.audio!);
+    formData.append("userId", loginResponse.id || "GH_USER");
     try {
       await delay(1000);
       set({ isFileLoading: true });
       const response = await tracksServise.uploadTrack(formData);
       if (response?.status === 201) {
-        const { setReRenderPage } = tracksPageStore.getState();
+        const { fetchTracks } = tracksPageStore.getState();
+        toast.success("Track upload!");
         get().onClose();
-        toast.success("Track uploaded");
-        setReRenderPage();
+        fetchTracks();
       }
     } catch (error) {
       //@ts-ignore

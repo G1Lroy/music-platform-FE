@@ -22,16 +22,15 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ className, children }) => {
   const router = useRouter();
   const { setIsOpenLogin, setIsOpenRegister } = modalStore();
-  const { isLogin, logout } = userStore();
+  const { isLogin, userLogout } = userStore();
   const { setІsFirstRendeProfile } = uiStore();
   const { ghLogout } = ghProfileStore();
 
   const handleLogout = () => {
-    logout();
+    router.push("/");
+    userLogout();
     ghLogout();
     setІsFirstRendeProfile(true);
-    GH_removeTokenLocal();
-    removeUserSession();
     toast.success("Logged out");
   };
   return (

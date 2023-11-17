@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { IUserProfile } from "./model";
 
 import { create } from "zustand";
+import ghProfile from "../ghProfile";
 
 const loginResponseEmpty = {
   email: "",
@@ -16,8 +17,8 @@ const userProfileEmpty = { email: "", _id: "" };
 const userStore = create<IUserProfile>((set, get) => ({
   isLogin: false,
   userProfileLoading: false,
+  currentUser: "",
   isUserLoading: false,
-  deleteUserProfileMessage: "",
   loginResponse: loginResponseEmpty,
   userProfile: userProfileEmpty,
   setIsLogin: (flag) => set({ isLogin: flag }),
@@ -44,8 +45,8 @@ const userStore = create<IUserProfile>((set, get) => ({
       if (response.status === 200) {
         removeUserSession();
         set({ isLogin: false });
-        set({ deleteUserProfileMessage: response.data });
-        get().logout();
+        get().userLogout();
+        toast.success(response.data);
       }
     } catch (error) {
       //@ts-ignore
@@ -54,10 +55,15 @@ const userStore = create<IUserProfile>((set, get) => ({
       set({ userProfileLoading: false });
     }
   },
-  logout: async () => {
+  userLogout: async () => {
     set({ isLogin: false });
     set({ userProfile: userProfileEmpty });
     set({ loginResponse: loginResponseEmpty });
+    set({ currentUser: "" });
+    removeUserSession();
+  },
+  getCurrentUser: () => {
+    set({ currentUser: get().loginResponse.id || "GH_USER" });
   },
 }));
 

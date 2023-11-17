@@ -11,16 +11,19 @@ interface IUserSession {
 
 const userSession = create<IUserSession>(() => ({
   continueUserSession: (isUserDataLocal, isGithubTokenLocal) => {
-    const { setIsLogin, setLoginUserResponse } = userStore.getState();
+    const { setIsLogin, setLoginUserResponse, getCurrentUser } = userStore.getState();
+
     if (isUserDataLocal) {
       setLoginUserResponse(getUserSession());
       toast.success("Login success");
       setIsLogin(true);
+      getCurrentUser();
       return;
     }
     if (isGithubTokenLocal) {
       toast.success("Github login success");
       setIsLogin(true);
+      getCurrentUser();
       return;
     }
   },
@@ -31,9 +34,10 @@ const userSession = create<IUserSession>(() => ({
       const codeParam = URLparams.get("code");
       if (codeParam) {
         const { fetchGhToken } = ghProfile.getState();
-        const { setIsLogin } = userStore.getState();
+        const { setIsLogin, getCurrentUser } = userStore.getState();
         fetchGhToken(codeParam);
         setIsLogin(true);
+        getCurrentUser();
         toast.success("Github login success");
         return;
       }

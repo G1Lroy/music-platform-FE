@@ -1,10 +1,10 @@
 import { tracksServise } from "@/apiServise/tracks";
-import { delay } from "@/utils";
 import { create } from "zustand";
-import { ITracksPage } from "./model";
+import { ITracksPage, TrackT } from "./model";
 import toast from "react-hot-toast";
+import userStore from "../user";
 
-const tracksPageStore = create<ITracksPage>((set) => ({
+const tracksPageStore = create<ITracksPage>((set, get) => ({
   reRenderPage: false,
   tracks: [],
   isTracksLoading: false,
@@ -12,7 +12,6 @@ const tracksPageStore = create<ITracksPage>((set) => ({
   fetchTracks: async () => {
     try {
       set({ isTracksLoading: true });
-      await delay(1000);
       const { data } = await tracksServise.getTracks();
       set({ tracks: data });
     } catch (e) {
@@ -20,6 +19,10 @@ const tracksPageStore = create<ITracksPage>((set) => ({
     } finally {
       set({ isTracksLoading: false });
     }
+  },
+  tracksByUser: [],
+  setTracksByUser: (tracks) => {
+    set({ tracksByUser: tracks });
   },
 }));
 

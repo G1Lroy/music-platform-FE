@@ -7,17 +7,16 @@ import { useEffect } from "react";
 import TrackItem from "./TrackItem";
 
 const PageContent: React.FC = () => {
-  const { isTracksLoading, tracks, reRenderPage, fetchTracks } = tracksPageStore();
+  const { tracks, fetchTracks, isTracksLoading } = tracksPageStore();
 
   useEffect(() => {
     fetchTracks();
-  }, [reRenderPage]);
+  }, []);
 
   return (
     <div>
-
-      {isTracksLoading ? (
-        <Loader className="w-5 h-5 border-2 border-white" />
+      {!tracks.length ? (
+        <Loader className="mt-4 w-5 h-5 border-2 border-white" />
       ) : (
         <div
           className="    grid 

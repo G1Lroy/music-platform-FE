@@ -6,35 +6,64 @@ import authModaStore from "@/store/authModal";
 import toast from "react-hot-toast";
 import { toastConfig } from "@/const";
 import uploadModalStore from "@/store/uploadModal";
+import tracksPageStore from "@/store/tracksPage";
+import { useEffect } from "react";
+import LibraryItem from "./LibraryItem";
 
 interface LibraryProps {}
 
 const Library: React.FC<LibraryProps> = ({}) => {
-  const { isLogin } = userStore();
+  const { isLogin, currentUser } = userStore();
+  const { tracksByUser, tracks, setTracksByUser } = tracksPageStore();
   const { setIsOpenLogin } = authModaStore();
   const { setIsOpenUpload } = uploadModalStore();
+
   const handleUpload = () => {
     if (!isLogin) {
-      toast("Please login!", toastConfig);
+      toast("For logged users only!", toastConfig);
       setIsOpenLogin(true);
       return;
     }
     setIsOpenUpload(true);
   };
+  useEffect(() => {
+    setTracksByUser(getTracksByUser());
+  }, [tracks, currentUser]);
+
+  const getTracksByUser = () => tracks.filter((t) => t.userId === currentUser);
+
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-between">
-        <div className="text-neutral-500 items-center gap-2 inline-flex">
-          <TbPlaylist size={25} />
-          <p className="font-medium text-base">Songs library</p>
+      <div className="flex items-center justify-between px-1 pt-2">
+        <div className="inline-flex items-center gap-x-2">
+          <TbPlaylist className="text-neutral-400" size={26} />
+          <p className="text-neutral-400 font-medium text-md">Your Library</p>
         </div>
         <AiOutlineFileAdd
           onClick={handleUpload}
-          size={25}
-          className="text-white hover:scale-75 transition cursor-pointer"
+          size={20}
+          className="
+            text-neutral-400 
+            cursor-pointer 
+            hover:text-white 
+            hover:scale-125
+            transition
+          "
         />
       </div>
-      <div className="flex flex-col gap-y-2 mt-2">List of songs</div>
+      <div className="flex flex-col gap-y-2 mt-4 px-3">
+        {!isLogin ? (
+          <div>Log in to see you library</div>
+        ) : (
+          <>
+            {tracksByUser.length > 0 ? (
+              tracksByUser.map((track) => <LibraryItem key={track._id} track={track} />)
+            ) : (
+              <div>You dont have upload track</div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

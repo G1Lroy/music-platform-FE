@@ -16,8 +16,9 @@ const AuthForm: React.FC = () => {
   const { isOpenLogin, fetchLoginUser, fetchRegisterUser } = modalStore();
   const { isUserLoading } = userStore();
 
-  const onSubmit = async (values: AuthFormValuesT) =>
+  const onSubmit = async (values: AuthFormValuesT) => {
     isOpenLogin ? fetchLoginUser(values) : fetchRegisterUser(values);
+  };
 
   return (
     <Formik initialValues={{ email: "", password: "" }} validationSchema={authSchema} onSubmit={onSubmit}>

@@ -1,5 +1,5 @@
 export interface IGhProfile {
-  ghProfile: ghProfileT;
+  profile: ghProfileT;
   ghProfileLoading: boolean;
   fetchGhProfile: (token: string) => Promise<void>;
   fetchGhToken: (token: string) => Promise<void>;
