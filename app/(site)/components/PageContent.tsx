@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import TrackItem from "./TrackItem";
 
 const PageContent: React.FC = () => {
-  const { tracks, fetchTracks, isTracksLoading } = tracksPageStore();
+  const { tracks, fetchTracks } = tracksPageStore();
 
   useEffect(() => {
     fetchTracks();

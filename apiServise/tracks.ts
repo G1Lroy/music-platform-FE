@@ -9,4 +9,8 @@ export class tracksServise {
     const response = await axios.get("http://localhost:5000/tracks");
     return response;
   }
+  static async searchTracks(searchQuery: string) {
+    const response = await axios.get("http://localhost:5000/tracks/search?query=" + searchQuery);
+    return response;
+  }
 }

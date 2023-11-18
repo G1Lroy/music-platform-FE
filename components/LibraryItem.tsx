@@ -15,7 +15,7 @@ const LibraryItem: React.FC<LibraryItemProps> = ({ track }) => {
         cursor-pointer 
         hover:bg-neutral-800/50 
         w-full 
-        p-2 
+        p-1 
         rounded-md
         bg-neutral-950
       "
@@ -24,8 +24,8 @@ const LibraryItem: React.FC<LibraryItemProps> = ({ track }) => {
         className="
           relative 
           rounded-md 
-          w-[50px]
-          h-[50px]
+          w-[40px]
+          h-[40px]
           overflow-hidden
         "
       >

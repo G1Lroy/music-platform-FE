@@ -51,7 +51,7 @@ const Library: React.FC<LibraryProps> = ({}) => {
           "
         />
       </div>
-      <div className="flex flex-col gap-y-2 mt-4 px-3">
+      <div className="flex flex-col gap-y-2 mt-4 ">
         {!isLogin ? (
           <div>Log in to see you library</div>
         ) : (
