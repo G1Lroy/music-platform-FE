@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/sidebar/Sidebar";
 import ModalProvider from "@/providers/ModalProvider";
 import ToasterProvider from "@/providers/ToasterProvider";
 import AuthProvider from "@/providers/AuthProvider";
+import Player from "@/components/player/Player";
 
 const font = Figtree({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <ModalProvider />
             {children}
           </Sidebar>
+          <Player />
         </AuthProvider>
       </body>
     </html>

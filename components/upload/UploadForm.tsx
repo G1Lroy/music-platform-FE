@@ -1,10 +1,10 @@
 import { Formik, Form } from "formik";
 import uploadModalStore from "@/store/uploadModal";
 import React from "react";
-import FormField from "./UI/FormField";
+import FormField from "../UI/FormField";
 import { uploadSchema } from "@/const/validationSchema";
-import FileInput from "./UI/FormFieldUpload";
-import Loader from "./UI/Loader";
+import FileInput from "../UI/FormFieldUpload";
+import Loader from "../UI/Loader";
 import { uploadFormValuesT } from "@/store/uploadModal/model";
 
 const UploadForm = () => {

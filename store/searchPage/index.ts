@@ -3,17 +3,9 @@ import { delay } from "@/utils";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import tracksPageStore from "../tracksPage";
-import { TrackT } from "../tracksPage/model";
+import { IsearhPage } from "./model";
 
-interface IsearhPage {
-  isSearchLoading: boolean;
-  searhParam: string;
-  displayedTracks: TrackT[];
-  setSearchParam: (searchQuery: string) => void;
-  fetchTracksByQuery: (searchQuery: string) => Promise<void>;
-  resetTracks: () => void;
-  filterTracksById: (data: { _id: string }[]) => void;
-}
+
 
 const searchPageStore = create<IsearhPage>((set, get) => ({
   isSearchLoading: false,
@@ -22,6 +14,7 @@ const searchPageStore = create<IsearhPage>((set, get) => ({
   setSearchParam: (searchQuery) => set({ searhParam: searchQuery }),
   fetchTracksByQuery: async (searchQuery) => {
     try {
+      set({ displayedTracks: [] });
       set({ isSearchLoading: true });
       await delay(1500);
       const { data } = await tracksServise.searchTracks(searchQuery);

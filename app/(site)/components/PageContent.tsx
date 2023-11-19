@@ -1,18 +1,18 @@
-"use client";
-
 import Loader from "@/components/UI/Loader";
-import tracksPageStore from "@/store/tracksPage";
-import { useEffect } from "react";
-
 import TrackItem from "./TrackItem";
+import { TrackT } from "@/store/tracksPage/model";
+import playerStore from "@/store/player";
 
-const PageContent: React.FC = () => {
-  const { tracks, fetchTracks } = tracksPageStore();
+interface PageContentProps {
+  tracks: TrackT[];
+}
 
-  useEffect(() => {
-    fetchTracks();
-  }, []);
-
+const PageContent: React.FC<PageContentProps> = ({ tracks }) => {
+  const { setCurrTrack, setCurrTracksCollection } = playerStore();
+  const clickOnTrack = (curTrack: TrackT, tracksArray: TrackT[]) => {
+    setCurrTrack(curTrack);
+    setCurrTracksCollection(tracksArray);
+  };
   return (
     <div>
       {!tracks.length ? (
@@ -30,8 +30,8 @@ const PageContent: React.FC = () => {
         mt-4
       "
         >
-          {tracks.map((track) => (
-            <TrackItem key={track._id} track={track} />
+          {tracks.map((track: TrackT) => (
+            <TrackItem onClick={() => clickOnTrack(track, tracks)} key={track._id} track={track} />
           ))}
         </div>
       )}

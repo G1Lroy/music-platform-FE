@@ -3,9 +3,9 @@ import { Formik, Form } from "formik";
 import { authSchema } from "@/const/validationSchema";
 import modalStore from "@/store/authModal";
 import userStore from "@/store/user";
-import Loader from "./UI/Loader";
+import Loader from "../UI/Loader";
 import toast from "react-hot-toast";
-import FormField from "./UI/FormField";
+import FormField from "../UI/FormField";
 
 export type AuthFormValuesT = {
   email: string;

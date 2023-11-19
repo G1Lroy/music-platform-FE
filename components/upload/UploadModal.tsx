@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Modal from "./Modal";
+import Modal from "../modal/Modal";
 import uploadModalStore from "@/store/uploadModal";
 import UploadForm from "./UploadForm";
 

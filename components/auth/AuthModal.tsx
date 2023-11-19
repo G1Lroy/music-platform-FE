@@ -1,12 +1,12 @@
 "use client";
 
-import Modal from "./Modal";
-import modalStore from "../store/authModal";
+import Modal from "../modal/Modal";
+import modalStore from "../../store/authModal";
 import { AiFillGithub } from "react-icons/ai";
 import { BsSpotify } from "react-icons/bs";
 import AuthForm from "./AuthForm";
 import { githubServise } from "@/apiServise/github";
-import Loader from "./UI/Loader";
+import Loader from "../UI/Loader";
 import ghProfile from "@/store/ghProfile";
 
 const AuthModal = () => {

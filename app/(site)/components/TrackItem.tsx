@@ -4,11 +4,13 @@ import React from "react";
 
 interface TrackItemProps {
   track: TrackT;
+  onClick: () => void;
 }
 
-const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
+const TrackItem: React.FC<TrackItemProps> = ({ track, onClick }) => {
   return (
     <div
+      onClick={onClick}
       className="  relative 
         group 
         flex 

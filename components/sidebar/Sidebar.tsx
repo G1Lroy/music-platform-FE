@@ -4,15 +4,18 @@ import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
-import Container from "./UI/Container";
+import Container from "../UI/Container";
 import SidebarItem from "./SidebarItem";
-import Library from "./Library";
+import Library from "../library/Library";
+import playerStore from "@/store/player";
+import { twMerge } from "tailwind-merge";
 
 interface SidebarProps {
   children: React.ReactNode;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ children }) => {
+  const { currTrack } = playerStore();
   const pathName = usePathname();
   const routs = useMemo(
     () => [
@@ -33,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   );
 
   return (
-    <div className="flex h-full">
+    <div className={twMerge("flex h-full", currTrack && "h-[calc(100%-80px)]")}>
       <div
         className="
         hidden
@@ -55,9 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           <Library />
         </Container>
       </div>
-      <main className="h-full flex-1 py-2 pr-2 overflow-y-auto">
-        {children}
-      </main>
+      <main className="h-full flex-1 py-2 pr-2 overflow-y-auto">{children}</main>
     </div>
   );
 };

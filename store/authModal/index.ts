@@ -1,5 +1,5 @@
 import { userServise } from "@/apiServise/user";
-import { AuthFormValuesT } from "@/components/AuthForm";
+import { AuthFormValuesT } from "@/components/auth/AuthForm";
 import { saveUserSession } from "@/utils/session";
 import { create } from "zustand";
 import { delay } from "@/utils";

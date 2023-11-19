@@ -9,6 +9,8 @@ import uploadModalStore from "@/store/uploadModal";
 import tracksPageStore from "@/store/tracksPage";
 import { useEffect } from "react";
 import LibraryItem from "./LibraryItem";
+import playerStore from "@/store/player";
+import { TrackT } from "@/store/tracksPage/model";
 
 interface LibraryProps {}
 
@@ -17,6 +19,12 @@ const Library: React.FC<LibraryProps> = ({}) => {
   const { tracksByUser, tracks, setTracksByUser } = tracksPageStore();
   const { setIsOpenLogin } = authModaStore();
   const { setIsOpenUpload } = uploadModalStore();
+  const { setCurrTrack, setCurrTracksCollection } = playerStore();
+
+  const handleClick = (currTrack: TrackT, tracksArray: TrackT[]) => {
+    setCurrTrack(currTrack);
+    setCurrTracksCollection(tracksArray);
+  };
 
   const handleUpload = () => {
     if (!isLogin) {
@@ -56,8 +64,10 @@ const Library: React.FC<LibraryProps> = ({}) => {
           <div>Log in to see you library</div>
         ) : (
           <>
-            {tracksByUser.length > 0 ? (
-              tracksByUser.map((track) => <LibraryItem key={track._id} track={track} />)
+            {tracksByUser.length ? (
+              tracksByUser.map((track) => (
+                <LibraryItem onClick={() => handleClick(track, tracksByUser)} key={track._id} track={track} />
+              ))
             ) : (
               <div>You dont have upload track</div>
             )}

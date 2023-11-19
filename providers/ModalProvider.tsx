@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import AuthModal from "@/components/AuthModal";
-import UploadModal from "@/components/UploadModal";
+import AuthModal from "@/components/auth/AuthModal";
+import UploadModal from "@/components/upload/UploadModal";
 
 interface ModalProviderProps {}
 

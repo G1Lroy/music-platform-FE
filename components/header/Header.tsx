@@ -5,7 +5,7 @@ import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
 import { BiUserPin } from "react-icons/bi";
-import Button from "./UI/Button";
+import Button from "../UI/Button";
 import modalStore from "@/store/authModal";
 import userStore from "@/store/user";
 import Link from "next/link";

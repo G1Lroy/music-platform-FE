@@ -1,4 +1,4 @@
-import { AuthFormValuesT } from "@/components/AuthForm";
+import { AuthFormValuesT } from "@/components/auth/AuthForm";
 
 export interface IauthModal {
   isOpenLogin: boolean;

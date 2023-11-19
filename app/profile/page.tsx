@@ -4,7 +4,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { GH_getTokenLocal, getUserSession } from "@/utils/session";
 import userStore from "@/store/user";
 import { useEffect } from "react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import Button from "@/components/UI/Button";
 import Loader from "@/components/UI/Loader";
 import uiStore from "@/store/ui";
