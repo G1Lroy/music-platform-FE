@@ -1,0 +1,54 @@
+.playing {
+    background: transparent;
+    width: 30px;
+    height: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 1px;
+    gap: 2px;
+}
+
+.playing__bar {
+    display: inline-block;
+    background: linear-gradient(to top, rgb(6, 96, 70), rgb(34, 197, 94));
+    flex: 1;
+    height: 100%;
+    animation: up-and-down 0.75s ease infinite alternate;
+}
+
+.playing__bar1 {
+    height: 60%;
+}
+
+.playing__bar2 {
+    height: 45%;
+    animation-delay: -0.5s;
+}
+
+.playing__bar3 {
+    height: 75%;
+    animation-delay: -1s;
+}
+
+@keyframes up-and-down {
+    10% {
+        height: 30%;
+    }
+
+    30% {
+        height: 100%;
+    }
+
+    60% {
+        height: 50%;
+    }
+
+    80% {
+        height: 75%;
+    }
+
+    100% {
+        height: 60%;
+    }
+}

@@ -1,8 +1,6 @@
-import { loginResponseT } from "@/store/user";
+import { loginResponseT } from "@/store/user/model";
 
-
-export const saveUserSession = (data: loginResponseT) =>
-  localStorage.setItem("userData", JSON.stringify(data));
+export const saveUserSession = (data: loginResponseT) => localStorage.setItem("userData", JSON.stringify(data));
 export const getUserSession = () => {
   if (localStorage.getItem("userData")) {
     const userData = JSON.parse(localStorage.getItem("userData") || "");

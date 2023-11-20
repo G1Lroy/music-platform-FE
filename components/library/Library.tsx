@@ -19,10 +19,11 @@ const Library: React.FC<LibraryProps> = ({}) => {
   const { tracksByUser, tracks, setTracksByUser } = tracksPageStore();
   const { setIsOpenLogin } = authModaStore();
   const { setIsOpenUpload } = uploadModalStore();
-  const { setCurrTrack, setCurrTracksCollection } = playerStore();
+  const { setCurrTrack, setCurrTracksCollection, currTrack } = playerStore();
 
-  const handleClick = (currTrack: TrackT, tracksArray: TrackT[]) => {
-    setCurrTrack(currTrack);
+  const handleClick = (track: TrackT, tracksArray: TrackT[]) => {
+    if (currTrack?._id === track._id) return;
+    setCurrTrack(track);
     setCurrTracksCollection(tracksArray);
   };
 

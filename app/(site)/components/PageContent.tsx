@@ -8,9 +8,10 @@ interface PageContentProps {
 }
 
 const PageContent: React.FC<PageContentProps> = ({ tracks }) => {
-  const { setCurrTrack, setCurrTracksCollection } = playerStore();
-  const clickOnTrack = (curTrack: TrackT, tracksArray: TrackT[]) => {
-    setCurrTrack(curTrack);
+  const { setCurrTrack, setCurrTracksCollection, currTrack } = playerStore();
+  const clickOnTrack = (track: TrackT, tracksArray: TrackT[]) => {
+    if (currTrack?._id === track._id) return;
+    setCurrTrack(track);
     setCurrTracksCollection(tracksArray);
   };
   return (

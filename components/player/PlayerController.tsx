@@ -4,24 +4,84 @@ import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
 import LibraryItem from "../library/LibraryItem";
 import SliderComponent from "./SliderComponent";
 import playerStore from "@/store/player";
+import { useEffect, useState } from "react";
+import { formatTime } from "@/utils";
+import "./../../assets/Play.css";
+let audio: HTMLAudioElement;
 
-let audio;
-
-const PlayerController: React.FC = ({}) => {
-  const { volume, setVolume, currTrack, toggleVolume, togglePLay, play, switchTrack, currTracksCollection } =
-    playerStore();
+const PlayerController = () => {
+  const {
+    volume,
+    setVolume,
+    currTrack,
+    toggleVolume,
+    togglePLay,
+    play,
+    switchTrack,
+    currTracksCollection,
+    duration,
+    setDuration,
+    currTime,
+    setCurrTime,
+  } = playerStore();
   const Icon = play ? BsPauseFill : BsPlayFill;
   const VolumeIcon = !volume ? HiSpeakerXMark : HiSpeakerWave;
-  const disabledSwitch = !currTracksCollection.length || currTracksCollection.length === 1;
+  const disabledSwitch = currTracksCollection.length <= 1;
+  const [isVolumeVisible, setIsVolumeVisible] = useState(false);
 
-  const playTrack = () => {};
+  const playTrack = () => {
+    if (!play) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+    togglePLay();
+  };
+  const setTrack = async () => {
+    if (currTrack) {
+      audio.src = "http://localhost:5000/" + currTrack.audio;
+      audio.onloadedmetadata = () => setDuration(audio.duration);
+      audio.ontimeupdate = () => setCurrTime(audio.currentTime);
+    }
+  };
+  const changeTrackProgress = (value: number) => {
+    setCurrTime(value);
+    audio.currentTime = value;
+  };
+  useEffect(() => {
+    if (!audio) audio = new Audio();
+    setTrack();
+    playTrack();
+  }, [currTrack]);
+
+  useEffect(() => {
+    audio.volume = volume;
+  }, [volume]);
+
+  useEffect(() => {
+    if (duration === currTime) {
+      switchTrack("next");
+    }
+  }, [currTime]);
 
   return (
     <>
       <div className="flex h-full justify-between gap-x-5 px-2">
-        <div className="flex min-w-[260px] items-center">
+        {/* TRACK ITEM */}
+        <div className="flex min-w-[260px] items-center relative">
           <LibraryItem className="bg-neutral-800" track={currTrack!} />
+          {play && (
+            <div className="playing absolute right-3">
+              <span className="playing__bar playing__bar1"></span>
+              <span className="playing__bar playing__bar2"></span>
+              <span className="playing__bar playing__bar3"></span>
+              <span className="playing__bar playing__bar2"></span>
+              <span className="playing__bar playing__bar1"></span>
+              <span className="playing__bar playing__bar3"></span>
+            </div>
+          )}
         </div>
+        {/*  */}
 
         {/* MOBILE */}
         <div
@@ -53,6 +113,7 @@ const PlayerController: React.FC = ({}) => {
         </div>
         {/*  */}
 
+        {/* MAIN CONTROLS */}
         <div
           className="
             hidden
@@ -77,7 +138,9 @@ const PlayerController: React.FC = ({}) => {
           />
 
           <div
-            onClick={togglePLay}
+            onClick={() => {
+              playTrack();
+            }}
             className="
               flex 
               items-center 
@@ -109,13 +172,28 @@ const PlayerController: React.FC = ({}) => {
         `}
           />
         </div>
+        {/*  */}
 
-        <div className="hidden md:flex max-w-xl w-full justify-center items-center">
-          <SliderComponent value={volume} onChange={(value) => setVolume(value)} />
+        {/* TRACK PROGRESS */}
+        <div className="hidden md:flex max-w-xl w-full justify-center items-center relative">
+          <div className="absolute top-4 left-0 text-xs text-green-500">{formatTime(currTime)}</div>
+          <SliderComponent
+            value={currTime}
+            onChange={(value) => changeTrackProgress(value)}
+            step={0.1}
+            max={duration}
+          />
+          <div className="absolute bottom-4 right-0 text-xs text-green-500">{formatTime(duration)}</div>
         </div>
+        {/*  */}
 
+        {/* VOLUME CONTROLS */}
         <div className="hidden md:flex w-min justify-end">
-          <div className="flex items-center gap-x-2 w-[120px] relative">
+          <div
+            onMouseEnter={() => setIsVolumeVisible(true)}
+            onMouseLeave={() => setIsVolumeVisible(false)}
+            className="flex items-center gap-x-2 w-[120px] relative"
+          >
             <VolumeIcon
               onClick={toggleVolume}
               className="active:scale-90 
@@ -124,9 +202,13 @@ const PlayerController: React.FC = ({}) => {
             hover:text-green-500"
               size={30}
             />
-            <SliderComponent value={volume} onChange={(value) => setVolume(value)} />
+            {isVolumeVisible && (
+              <div className="absolute top-4 left-[50%] text-xs text-green-500">{(volume * 100).toFixed()}%</div>
+            )}
+            <SliderComponent value={volume} onChange={(value) => setVolume(value)} step={0.01} max={1} />
           </div>
         </div>
+        {/*  */}
       </div>
     </>
   );

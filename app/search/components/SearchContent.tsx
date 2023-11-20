@@ -8,13 +8,14 @@ interface SearchContentProps {}
 
 const SearchContent: React.FC<SearchContentProps> = () => {
   const { isSearchLoading, displayedTracks } = searchPageStore();
-  const { setCurrTrack, setCurrTracksCollection } = playerStore();
+  const { setCurrTrack, setCurrTracksCollection, currTrack } = playerStore();
 
-  const handleClick = (currTrack: TrackT, tracksArray: TrackT[]) => {
-    setCurrTrack(currTrack);
+  const handleClick = (track: TrackT, tracksArray: TrackT[]) => {
+    if (currTrack?._id === track._id) return;
+    setCurrTrack(track);
     setCurrTracksCollection(tracksArray);
   };
-  
+
   return (
     <div className="flex flex-col gap-y-2 w-full px-6">
       {!displayedTracks.length ? (

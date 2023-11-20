@@ -1,18 +1,16 @@
 import * as Slider from "@radix-ui/react-slider";
-import { useState } from "react";
 interface SliderProps {
   value: number;
   onChange?: (value: number) => void;
   step?: number;
+  max: number;
 }
-const SliderComponent: React.FC<SliderProps> = ({ value, onChange, step }) => {
-  const [valueVisible, setValueVisible] = useState<boolean>(false);
+const SliderComponent: React.FC<SliderProps> = ({ value, onChange, step, max }) => {
 
   const handleChange = (newValue: number[]) => onChange?.(newValue[0]);
 
   return (
     <>
-      {valueVisible && <div className="absolute top-1 left-[50%] text-xs text-green-500">{value * 100}%</div>}
       <Slider.Root
         className="
       cursor-pointer
@@ -24,13 +22,11 @@ const SliderComponent: React.FC<SliderProps> = ({ value, onChange, step }) => {
         w-full 
         h-2
       "
-        onMouseEnter={() => setValueVisible(true)}
-        onMouseLeave={() => setValueVisible(false)}
         defaultValue={[value]}
         value={[value]}
         onValueChange={handleChange}
-        max={1}
-        step={0.1}
+        max={max}
+        step={step}
         aria-label="Volume"
       >
         <Slider.Track
