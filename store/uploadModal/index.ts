@@ -21,8 +21,8 @@ const uploadModalStore = create<IUploadModaL>((set, get) => ({
     formData.append("audio", values.audio!);
     formData.append("userId", loginResponse.id || "GH_USER");
     try {
-      await delay(1000);
       set({ isFileLoading: true });
+      await delay(1000);
       const response = await tracksServise.uploadTrack(formData);
       if (response?.status === 201) {
         const { fetchTracks } = tracksPageStore.getState();

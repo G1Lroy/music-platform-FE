@@ -26,8 +26,20 @@ const UploadForm = () => {
             inputType="text"
             labelText="Song artist"
           />
-          <FileInput className="mt-3" setFieldValue={setFieldValue} fileType="audio/*" fieldName="audio" />
-          <FileInput className="my-3" setFieldValue={setFieldValue} fileType="image/*" fieldName="image" />
+          <FileInput
+            disableCondition={isFileLoading}
+            className="mt-3"
+            setFieldValue={setFieldValue}
+            fileType="audio/*"
+            fieldName="audio"
+          />
+          <FileInput
+            disableCondition={isFileLoading}
+            className="my-3"
+            setFieldValue={setFieldValue}
+            fileType="image/*"
+            fieldName="image"
+          />
 
           <button
             disabled={isFileLoading}

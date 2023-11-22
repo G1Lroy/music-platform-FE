@@ -1,29 +1,13 @@
 import { create } from "zustand";
-import { TrackT } from "../tracksPage/model";
-
-export interface IPlayerStore {
-  play: boolean;
-  volume: number;
-  setVolume: (value: number) => void;
-  setCurrTrack: (track: TrackT | null) => void;
-  setCurrTracksCollection: (tracks: TrackT[]) => void;
-  currTrack: TrackT | null;
-  currTracksCollection: TrackT[];
-  toggleVolume: () => void;
-  togglePLay: () => void;
-  switchTrack: (type: "next" | "prev") => void;
-  duration: number;
-  setDuration: (d: number) => void;
-  currTime: number;
-  setCurrTime: (t: number) => void;
-
-}
+import { IPlayerStore } from "./model";
 
 const playerStore = create<IPlayerStore>((set, get) => ({
   play: false,
   volume: 0.5,
   currTrack: null,
   currTracksCollection: [],
+  duration: 0,
+  currTime: 0,
   setVolume: (value) => {
     set({ volume: value });
   },
@@ -34,15 +18,18 @@ const playerStore = create<IPlayerStore>((set, get) => ({
     set({ currTracksCollection: tracks });
   },
   toggleVolume: () => {
-    if (get().volume) set({ volume: 0 });
-    else set({ volume: 1 });
+    if (get().volume) {
+      set({ volume: 0 });
+    } else {
+      set({ volume: 0.5 });
+    }
   },
-  togglePLay: () => {
-    set({ play: !get().play });
+  setPLay: (flag) => {
+    set({ play: flag });
   },
   switchTrack: (type) => {
-    const { currTracksCollection, currTrack, setCurrTrack, togglePLay } = get();
-    togglePLay();
+    const { currTracksCollection, currTrack, setCurrTrack, setPLay } = get();
+    setPLay(false);
     const currIdx = currTracksCollection.findIndex((t) => t._id === currTrack?._id);
     if (type === "next") {
       const nextTrack = currTracksCollection[currIdx + 1];
@@ -55,10 +42,7 @@ const playerStore = create<IPlayerStore>((set, get) => ({
       return setCurrTrack(prevTrack);
     }
   },
-  duration: 0,
   setDuration: (d) => set({ duration: d }),
-  currTime: 0,
   setCurrTime: (t) => set({ currTime: t }),
- 
 }));
 export default playerStore;

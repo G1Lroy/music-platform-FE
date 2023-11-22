@@ -7,14 +7,16 @@ interface FileInputProps {
   fileType: string;
   fieldName: string;
   className?: string;
+  disableCondition: boolean;
 }
 
-const FileInput: React.FC<FileInputProps> = ({ setFieldValue, fileType, fieldName, className }) => {
+const FileInput: React.FC<FileInputProps> = ({ setFieldValue, fileType, fieldName, className, disableCondition }) => {
   const [fileName, setFileName] = useState<string | undefined>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   return (
     <div className={twMerge("flex items-center justify-center flex-col", className)}>
       <input
+        disabled={disableCondition}
         accept={fileType}
         ref={fileInputRef}
         type="file"

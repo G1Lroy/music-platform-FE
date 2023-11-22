@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { IUserProfile } from "./model";
 
 import { create } from "zustand";
-import ghProfile from "../ghProfile";
 
 const loginResponseEmpty = {
   email: "",

@@ -7,15 +7,16 @@ import playerStore from "@/store/player";
 import { useEffect, useState } from "react";
 import { formatTime } from "@/utils";
 import "./../../assets/Play.css";
+
 let audio: HTMLAudioElement;
 
-const PlayerController = () => {
+const PlayerController: React.FC = () => {
   const {
     volume,
     setVolume,
     currTrack,
     toggleVolume,
-    togglePLay,
+    setPLay,
     play,
     switchTrack,
     currTracksCollection,
@@ -28,17 +29,20 @@ const PlayerController = () => {
   const VolumeIcon = !volume ? HiSpeakerXMark : HiSpeakerWave;
   const disabledSwitch = currTracksCollection.length <= 1;
   const [isVolumeVisible, setIsVolumeVisible] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const playTrack = () => {
-    if (!play) {
+    if (audio.paused) {
       audio.play();
+      setPLay(true);
     } else {
+      setPLay(false);
       audio.pause();
     }
-    togglePLay();
   };
   const setTrack = async () => {
     if (currTrack) {
+      audio.pause();
       audio.src = "http://localhost:5000/" + currTrack.audio;
       audio.onloadedmetadata = () => setDuration(audio.duration);
       audio.ontimeupdate = () => setCurrTime(audio.currentTime);
@@ -48,6 +52,7 @@ const PlayerController = () => {
     setCurrTime(value);
     audio.currentTime = value;
   };
+
   useEffect(() => {
     if (!audio) audio = new Audio();
     setTrack();
@@ -59,19 +64,21 @@ const PlayerController = () => {
   }, [volume]);
 
   useEffect(() => {
-    if (duration === currTime) {
+    if (!isFirstRender && duration === currTime) {
       switchTrack("next");
     }
+    setIsFirstRender(false);
   }, [currTime]);
 
   return (
     <>
       <div className="flex h-full justify-between gap-x-5 px-2">
         {/* TRACK ITEM */}
+
         <div className="flex min-w-[260px] items-center relative">
           <LibraryItem className="bg-neutral-800" track={currTrack!} />
           {play && (
-            <div className="playing absolute right-3">
+            <div className="playing absolute right-1 bottom-3">
               <span className="playing__bar playing__bar1"></span>
               <span className="playing__bar playing__bar2"></span>
               <span className="playing__bar playing__bar3"></span>
@@ -95,7 +102,7 @@ const PlayerController = () => {
           "
         >
           <div
-            onClick={togglePLay}
+            onClick={() => setPLay(true)}
             className="
               h-10
               w-10
@@ -175,7 +182,7 @@ const PlayerController = () => {
         {/*  */}
 
         {/* TRACK PROGRESS */}
-        <div className="hidden md:flex max-w-xl w-full justify-center items-center relative">
+        <div className="hidden md:flex w-full justify-center items-center relative">
           <div className="absolute top-4 left-0 text-xs text-green-500">{formatTime(currTime)}</div>
           <SliderComponent
             value={currTime}

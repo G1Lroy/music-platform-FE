@@ -1,7 +1,7 @@
 "use client";
 
 import playerStore from "@/store/player";
-import PlayerContent from "./PlayerController";
+import PlayerController from "./PlayerController";
 
 const Player: React.FC = () => {
   const { currTrack } = playerStore();
@@ -20,7 +20,7 @@ const Player: React.FC = () => {
         px-3
       "
     >
-      <PlayerContent />
+      <PlayerController />
     </div>
   );
 };

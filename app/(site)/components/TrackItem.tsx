@@ -49,7 +49,7 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, onClick }) => {
             truncate
           "
         >
-          By {track.artist}
+          {track.artist}
         </p>
       </div>
       <div

@@ -13,4 +13,8 @@ export class tracksServise {
     const response = await axios.get("http://localhost:5000/tracks/search?query=" + searchQuery);
     return response;
   }
+  static async deleteTrack(id: string) {
+    const response = await axios.delete("http://localhost:5000/tracks/" + id);
+    return response;
+  }
 }

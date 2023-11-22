@@ -67,7 +67,12 @@ const Library: React.FC<LibraryProps> = ({}) => {
           <>
             {tracksByUser.length ? (
               tracksByUser.map((track) => (
-                <LibraryItem onClick={() => handleClick(track, tracksByUser)} key={track._id} track={track} />
+                <LibraryItem
+                  onClick={() => handleClick(track, tracksByUser)}
+                  key={track._id}
+                  track={track}
+                  isUserLibrary={true}
+                />
               ))
             ) : (
               <div>You dont have upload track</div>
