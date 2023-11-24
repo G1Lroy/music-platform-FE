@@ -16,7 +16,7 @@ const searchPageStore = create<IsearhPage>((set, get) => ({
     try {
       set({ displayedTracks: [] });
       set({ isSearchLoading: true });
-      await delay(1500);
+      await delay(1000);
       const { data } = await tracksServise.searchTracks(searchQuery);
       get().filterTracksById(data);
     } catch (error) {

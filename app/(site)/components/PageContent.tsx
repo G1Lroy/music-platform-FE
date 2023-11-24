@@ -8,12 +8,8 @@ interface PageContentProps {
 }
 
 const PageContent: React.FC<PageContentProps> = ({ tracks }) => {
-  const { setCurrTrack, setCurrTracksCollection, currTrack } = playerStore();
-  const clickOnTrack = (track: TrackT, tracksArray: TrackT[]) => {
-    if (currTrack?._id === track._id) return;
-    setCurrTrack(track);
-    setCurrTracksCollection(tracksArray);
-  };
+  const { setCurrTracksCollection } = playerStore();
+
   return (
     <div>
       {!tracks.length ? (
@@ -32,7 +28,7 @@ const PageContent: React.FC<PageContentProps> = ({ tracks }) => {
       "
         >
           {tracks.map((track: TrackT) => (
-            <TrackItem onClick={() => clickOnTrack(track, tracks)} key={track._id} track={track} />
+            <TrackItem onClick={() => setCurrTracksCollection(tracks, track)} key={track._id} track={track} />
           ))}
         </div>
       )}

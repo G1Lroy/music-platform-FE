@@ -2,19 +2,12 @@ import LibraryItem from "@/components/library/LibraryItem";
 import Loader from "@/components/UI/Loader";
 import playerStore from "@/store/player";
 import searchPageStore from "@/store/searchPage";
-import { TrackT } from "@/store/tracksPage/model";
 
 interface SearchContentProps {}
 
 const SearchContent: React.FC<SearchContentProps> = () => {
   const { isSearchLoading, displayedTracks } = searchPageStore();
-  const { setCurrTrack, setCurrTracksCollection, currTrack } = playerStore();
-
-  const handleClick = (track: TrackT, tracksArray: TrackT[]) => {
-    if (currTrack?._id === track._id) return;
-    setCurrTrack(track);
-    setCurrTracksCollection(tracksArray);
-  };
+  const { setCurrTracksCollection } = playerStore();
 
   return (
     <div className="flex flex-col gap-y-2 w-full px-6">
@@ -28,7 +21,7 @@ const SearchContent: React.FC<SearchContentProps> = () => {
           <div key={track._id} className="flex items-center gap-x-4 w-full">
             <div className="w-full">
               <LibraryItem
-                onClick={() => handleClick(track, displayedTracks)}
+                onClick={() => setCurrTracksCollection(displayedTracks, track)}
                 className="bg-transparent"
                 track={track}
                 key={track._id}

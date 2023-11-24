@@ -19,13 +19,7 @@ const Library: React.FC<LibraryProps> = ({}) => {
   const { tracksByUser, tracks, setTracksByUser } = tracksPageStore();
   const { setIsOpenLogin } = authModaStore();
   const { setIsOpenUpload } = uploadModalStore();
-  const { setCurrTrack, setCurrTracksCollection, currTrack } = playerStore();
-
-  const handleClick = (track: TrackT, tracksArray: TrackT[]) => {
-    if (currTrack?._id === track._id) return;
-    setCurrTrack(track);
-    setCurrTracksCollection(tracksArray);
-  };
+  const { setCurrTracksCollection } = playerStore();
 
   const handleUpload = () => {
     if (!isLogin) {
@@ -68,7 +62,7 @@ const Library: React.FC<LibraryProps> = ({}) => {
             {tracksByUser.length ? (
               tracksByUser.map((track) => (
                 <LibraryItem
-                  onClick={() => handleClick(track, tracksByUser)}
+                  onClick={() => setCurrTracksCollection(tracksByUser, track)}
                   key={track._id}
                   track={track}
                   isUserLibrary={true}

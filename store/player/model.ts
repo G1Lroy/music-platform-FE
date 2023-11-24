@@ -5,7 +5,7 @@ export interface IPlayerStore {
   volume: number;
   setVolume: (value: number) => void;
   setCurrTrack: (track: TrackT | null) => void;
-  setCurrTracksCollection: (tracks: TrackT[]) => void;
+  setCurrTracksCollection: (tracks: TrackT[], track: TrackT) => void;
   currTrack: TrackT | null;
   currTracksCollection: TrackT[];
   toggleVolume: () => void;

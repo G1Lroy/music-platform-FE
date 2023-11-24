@@ -4,13 +4,12 @@ import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
 import LibraryItem from "../library/LibraryItem";
 import SliderComponent from "./SliderComponent";
 import playerStore from "@/store/player";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatTime } from "@/utils";
 import "./../../assets/Play.css";
 
-let audio: HTMLAudioElement;
-
 const PlayerController: React.FC = () => {
+  const audio = useRef<HTMLAudioElement>();
   const {
     volume,
     setVolume,
@@ -32,35 +31,35 @@ const PlayerController: React.FC = () => {
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   const playTrack = () => {
-    if (audio.paused) {
-      audio.play();
+    if (audio.current?.paused) {
+      audio.current.play();
       setPLay(true);
     } else {
       setPLay(false);
-      audio.pause();
+      audio.current?.pause();
     }
   };
   const setTrack = async () => {
-    if (currTrack) {
-      audio.pause();
-      audio.src = "http://localhost:5000/" + currTrack.audio;
-      audio.onloadedmetadata = () => setDuration(audio.duration);
-      audio.ontimeupdate = () => setCurrTime(audio.currentTime);
+    if (currTrack && audio.current) {
+      audio.current.pause();
+      audio.current.src = "http://localhost:5000/" + currTrack.audio;
+      audio.current.onloadedmetadata = () => setDuration(audio.current!.duration);
+      audio.current.ontimeupdate = () => setCurrTime(audio.current!.currentTime);
     }
   };
   const changeTrackProgress = (value: number) => {
     setCurrTime(value);
-    audio.currentTime = value;
+    audio.current!.currentTime = value;
   };
 
   useEffect(() => {
-    if (!audio) audio = new Audio();
+    if (!audio.current) audio.current = new Audio();
     setTrack();
     playTrack();
   }, [currTrack]);
 
   useEffect(() => {
-    audio.volume = volume;
+    audio.current!.volume = volume;
   }, [volume]);
 
   useEffect(() => {
@@ -75,7 +74,7 @@ const PlayerController: React.FC = () => {
       <div className="flex h-full justify-between gap-x-5 px-2">
         {/* TRACK ITEM */}
 
-        <div className="flex min-w-[260px] items-center relative">
+        <div className="flex w-full max-w-[260px]  items-center relative">
           <LibraryItem className="bg-neutral-800" track={currTrack!} />
           {play && (
             <div className="playing absolute right-1 bottom-3">
@@ -96,13 +95,13 @@ const PlayerController: React.FC = () => {
             flex 
             md:hidden 
             col-auto 
-            w-full 
             justify-end 
             items-center
+            order-2
           "
         >
           <div
-            onClick={() => setPLay(true)}
+            onClick={playTrack}
             className="
               h-10
               w-10
@@ -182,7 +181,7 @@ const PlayerController: React.FC = () => {
         {/*  */}
 
         {/* TRACK PROGRESS */}
-        <div className="hidden md:flex w-full justify-center items-center relative">
+        <div className="flex w-full max-md:order-1 justify-center items-center relative">
           <div className="absolute top-4 left-0 text-xs text-green-500">{formatTime(currTime)}</div>
           <SliderComponent
             value={currTime}

@@ -14,8 +14,10 @@ const playerStore = create<IPlayerStore>((set, get) => ({
   setCurrTrack: (track) => {
     set({ currTrack: track });
   },
-  setCurrTracksCollection: (tracks) => {
+  setCurrTracksCollection: (tracks, track) => {
+    if (get().currTrack?._id === track._id) return;
     set({ currTracksCollection: tracks });
+    set({ currTrack: track });
   },
   toggleVolume: () => {
     if (get().volume) {

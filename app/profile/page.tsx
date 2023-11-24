@@ -18,26 +18,20 @@ const Profile = () => {
   const { profile, ghProfileLoading, fetchGhProfile } = ghProfileStore();
 
   useEffect(() => {
-    if (!isLogin) {
-      router.replace("/");
-      return;
-    }
+    if (!isLogin) return router.replace("/");
     if (!isFirstRendeProfile) return;
     makeFetchAction();
     setІsFirstRendeProfile(false);
-    
   }, [isLogin]);
 
   const makeFetchAction = () => {
     if (getUserSession()) {
       const { access_token, id } = loginResponse;
-      fetchProfileInfo(access_token, id);
-      return;
+      return fetchProfileInfo(access_token, id);
     }
     if (GH_getTokenLocal()) {
       const token = GH_getTokenLocal()!;
-      fetchGhProfile(token);
-      return;
+      return fetchGhProfile(token);
     }
   };
   return (
